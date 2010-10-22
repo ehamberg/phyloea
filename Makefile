@@ -1,20 +1,22 @@
-OBJS=src/PhyloTree.o src/EvolutionModel.o
+OBJS := $(subst src/main.o,, $(patsubst %.cpp,%.o,$(wildcard src/*.cpp)))
+TESTOBJS := $(patsubst %.cpp,%.o,$(wildcard tests/*.cpp))
 
 CXX=g++
 CXXFLAGS=-Wall -pedantic -Werror -Isrc -g
-LIBS=
-TESTLIBS=-lgtest -lpthread
 
+LIBS=
 TARGET=main
+
+TESTLIBS=-lgtest -lpthread
 TESTTARGET=runtests
 
 all: main tests
 
 main: src/main.o $(OBJS)
-	$(CXX) src/main.o $(OBJS) -o $(TARGET) $(LIBS)
+	$(CXX) src/main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
 
-tests: tests/main.o $(OBJS)
-	$(CXX) tests/main.o $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
+tests: $(TESTOBJS) $(OBJS)
+	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
 
 clean:
 	rm -f */*.o
