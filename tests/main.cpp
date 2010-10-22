@@ -3,8 +3,8 @@
 #include <vector>
 #include <iostream>
 
-#include "../src/PhyloTree.h"
-#include "../src/EvolutionModel.h"
+#include "PhyloTree.h"
+#include "EvolutionModel.h"
 
 namespace {
 
