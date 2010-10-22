@@ -10,6 +10,7 @@ class Kimura : public EvolutionModel {
 public:
     Kimura(double R) { this->R = R; }
     virtual double P(char a, char b, double t) const;
+    void setR(double R) { this->R = R; }
 private:
     double R;
 };
