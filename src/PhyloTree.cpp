@@ -30,6 +30,10 @@ PhyloTreeNode::PhyloTreeNode(string name, vector<char> states)
     this->states = states;
 }
 
+PhyloTreeNode::~PhyloTreeNode()
+{
+}
+
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
     children.push_back(pair<PhyloTreeNode*, double>(child, distance));
 }

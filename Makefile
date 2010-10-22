@@ -1,13 +1,20 @@
-OBJS=src/main.o src/PhyloTree.o src/EvolutionModel.o
+OBJS=src/PhyloTree.o src/EvolutionModel.o
 
 CXX=g++
 CXXFLAGS=-Wall -pedantic -Werror -g
 LIBS=
+TESTLIBS=-lgtest -lpthread
 
-TARGET=test
+TARGET=main
+TESTTARGET=runtests
 
-all: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+all: main tests
+
+main: src/main.o $(OBJS)
+	$(CXX) $(CXXFLAGS) src/main.o $(OBJS) -o $(TARGET) $(LIBS)
+
+tests: tests/main.o $(OBJS)
+	$(CXX) tests/main.o $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
 
 clean:
-	rm -f src/*.o
+	rm -f */*.o

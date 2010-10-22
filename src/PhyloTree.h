@@ -15,6 +15,7 @@ class PhyloTreeNode {
 public:
     PhyloTreeNode();
     PhyloTreeNode(string name, vector<char> states);
+    ~PhyloTreeNode();
     const string getName() const { return name; }
     int noStates() const { return 1/*states.size()*/; }
     int height() const;
