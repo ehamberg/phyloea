@@ -10,13 +10,10 @@ TARGET=main
 TESTLIBS=-lgtest -lpthread
 TESTTARGET=runtests
 
-all: main tests
-
-main: src/main.o $(OBJS)
+all: src/main.o $(OBJS) $(TESTOBJS)
 	$(CXX) src/main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
-
-tests: $(TESTOBJS) $(OBJS)
 	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
+	./runtests --gtest_shuffle
 
 clean:
 	rm -f */*.o
