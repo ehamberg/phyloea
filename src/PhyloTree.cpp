@@ -48,13 +48,14 @@ void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
 
 int PhyloTreeNode::height() const
 {
-    if (children.size() == 0) {
+    if (children.empty()) {
         return 1;
     }
 
     int maxH = 0;
-    for (unsigned int i = 0; i < children.size(); i++) {
-        maxH = MAX(maxH, 1+children[i].first->height());
+    vector<pair<PhyloTreeNode*, double> >::const_iterator it;
+    for (it = children.begin(); it != children.end(); it++) {
+        maxH = MAX(maxH, 1+it->first->height());
     }
 
     return maxH;
@@ -132,11 +133,12 @@ string PhyloTreeNode::links() const
 {
     stringstream out;
 
-    for (unsigned int i = 0; i < children.size(); i++) {
-        out << "\t\"" << name << "\" -> \"" << children[i].first->getName()
-            << "\" [label=\"" << children[i].second << "\"];\n";
+    vector<pair<PhyloTreeNode*, double> >::const_iterator it;
+    for (it = children.begin(); it != children.end(); it++) {
+        out << "\t\"" << name << "\" -> \"" << it->first->getName()
+            << "\" [label=\"" << it->second << "\"];\n";
 
-        out << children[i].first->links();
+        out << it->first->links();
     }
 
     return out.str();
