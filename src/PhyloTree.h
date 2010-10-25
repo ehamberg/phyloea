@@ -37,7 +37,13 @@ public:
 private:
     string name; // species/taxon name
     string states; // observed states for each site
-    vector<pair<PhyloTreeNode*, double> > children; // child nodes together with a distance
+
+    // child nodes together with a distance
+    PhyloTreeNode* left;
+    PhyloTreeNode* right;
+    double leftDist;
+    double rightDist;
+
     vector<vector<double> > likelihoods;
     vector<double> leafLikelihood(char n) const;
     unsigned int nStates;

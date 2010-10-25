@@ -43,7 +43,6 @@ protected:
 
         tree1->addChild(new PhyloTreeNode(), 1.0);
         tree1->addChild(new PhyloTreeNode(), 1.0);
-        tree1->addChild(new PhyloTreeNode(), 1.0);
 
         tree2->addChild(tree1, 1.0);
     }

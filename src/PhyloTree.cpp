@@ -24,6 +24,8 @@ PhyloTreeNode::PhyloTreeNode()
 
     name = "node " + out.str();
     nStates = 0;
+
+    left = right = NULL;
 }
 
 PhyloTreeNode::PhyloTreeNode(string name, string states)
@@ -31,41 +33,46 @@ PhyloTreeNode::PhyloTreeNode(string name, string states)
     this->name = name;
     this->states = states;
     this->nStates = states.size();
+
+    left = right = NULL;
 }
 
 PhyloTreeNode::~PhyloTreeNode()
 {
-    //cout << "bye from " << name << '\n';
-    //cout << "\tdeleting " << children.size() << " children..." << '\n';
-    // delete all children
-    vector<pair<PhyloTreeNode*, double> >::iterator it;
-    for (it = children.begin(); it != children.end(); it++) {
-        delete (*it).first;
-    }
+    // delete children
+    delete left;
+    delete right;
 }
 
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
+    assert(!left or !right); // only two child nodes are allowed
+
     if (nStates == 0) {
         nStates = child->noStates();
     } else {
         assert(nStates == child->noStates());
     }
-    children.push_back(pair<PhyloTreeNode*, double>(child, distance));
+
+    if (!left) {
+        left = child;
+        leftDist = distance;
+    } else if (!right) {
+        right = child;
+        rightDist = distance;
+    }
 }
 
 int PhyloTreeNode::height() const
 {
-    if (children.empty()) {
+    if (!left and !right) {
         return 1;
     }
 
-    int maxH = 0;
-    vector<pair<PhyloTreeNode*, double> >::const_iterator it;
-    for (it = children.begin(); it != children.end(); it++) {
-        maxH = MAX(maxH, 1+it->first->height());
+    if (!right) {
+        return 1+left->height();
     }
 
-    return maxH;
+    return 1+MAX(left->height(), right->height());
 }
 
 int PhyloTree::height() const
@@ -104,7 +111,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
         return likelihoods;
     }
 
-    if (children.empty()) { // leaf node
+    if (!left and !right) { // leaf node
         for (unsigned int i = 0; i < noStates(); i++) {
             likelihoods.push_back(leafLikelihood(states[i]));
         }
@@ -120,10 +127,10 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
         for (int s = 0; s < 4; s++) {
             xs = ys = 0.0;
             for (int x = 0; x < 4; x++) {
-                double p1 = eModel->P(nucleotides[s], nucleotides[x], children[0].second);
-                double p2 = eModel->P(nucleotides[s], nucleotides[x], children[1].second);
-                double l1 = children[0].first->likelihood(eModel)[i][x];
-                double l2 = children[1].first->likelihood(eModel)[i][x];
+                double p1 = eModel->P(nucleotides[s], nucleotides[x], leftDist);
+                double p2 = eModel->P(nucleotides[s], nucleotides[x], rightDist);
+                double l1 = left->likelihood(eModel)[i][x];
+                double l2 = right->likelihood(eModel)[i][x];
                 xs += p1*l1;
                 ys += p2*l2;
             }
@@ -141,12 +148,16 @@ string PhyloTreeNode::links() const
 {
     stringstream out;
 
-    vector<pair<PhyloTreeNode*, double> >::const_iterator it;
-    for (it = children.begin(); it != children.end(); it++) {
-        out << "\t\"" << name << "\" -> \"" << it->first->getName()
-            << "\" [label=\"" << it->second << "\"];\n";
+    if (left) {
+        out << "\t\"" << name << "\" -> \"" << left->getName()
+            << "\" [label=\"" << leftDist << "\"];\n";
+        out << left->links();
+    }
 
-        out << it->first->links();
+    if (right) {
+        out << "\t\"" << name << "\" -> \"" << right->getName()
+            << "\" [label=\"" << leftDist << "\"];\n";
+        out << right->links();
     }
 
     return out.str();
