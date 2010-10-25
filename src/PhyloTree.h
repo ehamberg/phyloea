@@ -19,7 +19,7 @@ public:
     PhyloTreeNode(string name, vector<char> states);
     ~PhyloTreeNode();
     const string getName() const { return name; }
-    int noStates() const { return 1/*states.size()*/; }
+    int noStates() const { return nStates; }
     int height() const;
     void addChild(PhyloTreeNode*, double);
 
@@ -40,6 +40,7 @@ private:
     vector<pair<PhyloTreeNode*, double> > children; // child nodes together with a distance
     vector<vector<double> > likelihoods;
     vector<double> leafLikelihood(char n) const;
+    unsigned int nStates;
 };
 
 

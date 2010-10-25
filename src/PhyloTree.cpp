@@ -23,12 +23,14 @@ PhyloTreeNode::PhyloTreeNode()
     out.str();
 
     this->name = "node " + out.str();
+    this->nStates = 0;
 }
 
 PhyloTreeNode::PhyloTreeNode(string name, vector<char> states)
 {
     this->name = name;
     this->states = states;
+    this->nStates = states.size();
 }
 
 PhyloTreeNode::~PhyloTreeNode()
@@ -43,6 +45,11 @@ PhyloTreeNode::~PhyloTreeNode()
 }
 
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
+    if (nStates == 0) {
+        nStates = child->noStates();
+    } else {
+        assert(nStates == child->noStates());
+    }
     children.push_back(pair<PhyloTreeNode*, double>(child, distance));
 }
 

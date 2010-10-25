@@ -9,18 +9,23 @@ int main(int argc, const char *argv[])
 {
     vector<char> states;
     states.push_back('A');
+    states.push_back('A');
     PhyloTreeNode* n1 = new PhyloTreeNode("species 1", states);
 
     states[0] = 'C';
+    states[1] = 'C';
     PhyloTreeNode* n2 = new PhyloTreeNode("species 2", states);
 
     states[0] = 'C';
+    states[1] = 'C';
     PhyloTreeNode* n3 = new PhyloTreeNode("species 3", states);
 
     states[0] = 'C';
+    states[1] = 'C';
     PhyloTreeNode* n4 = new PhyloTreeNode("species 4", states);
 
     states[0] = 'G';
+    states[1] = 'G';
     PhyloTreeNode* n5 = new PhyloTreeNode("species 5", states);
 
     PhyloTreeNode* y = new PhyloTreeNode;
