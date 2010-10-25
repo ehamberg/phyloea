@@ -129,6 +129,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     return likelihoods;
 }
 
+// print all links from this node to child nodes in graphviz format
 string PhyloTreeNode::links() const
 {
     stringstream out;
