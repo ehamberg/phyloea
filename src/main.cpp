@@ -1,5 +1,6 @@
 #include "PhyloTree.h"
 #include "EvolutionModel.h"
+#include "Fasta.h"
 #include <iostream>
 #include <cmath>
 
@@ -37,6 +38,13 @@ int main(int argc, const char *argv[])
 
     cout << pow(10, t.logLikelihood()) << '\n';
     cout << t.dot() << '\n';
+
+    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta");
+
+    vector<PhyloTreeNode*>::iterator it;
+    for (it = nodes.begin(); it != nodes.end(); it++) {
+        delete *it;
+    }
 
     return 0;
 }
