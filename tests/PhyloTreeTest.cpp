@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include <vector>
+#include <cmath>
 
 #include "PhyloTree.h"
 #include "EvolutionModel.h"
@@ -70,7 +71,7 @@ protected:
 
 // test a simple tree for which the likelihood is known
 TEST_F(PhyloTreeTest, SimpleTreeLikelihood) {
-    ASSERT_FLOAT_EQ(0.0000294480138762, t->likelihood());
+    ASSERT_FLOAT_EQ(0.0000294480138762, pow(10.0, t->logLikelihood()));
 }
 
 TEST_F(PhyloTreeTest, TreeHeight) {

@@ -53,7 +53,7 @@ public:
     int height() const;
 
     // returns the tree's total likelihood
-    double likelihood();
+    double logLikelihood();
 
     // returns string representation of tree in graphviz dot format
     string dot() const;

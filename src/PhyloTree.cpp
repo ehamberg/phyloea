@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <cassert>
+#include <cmath>
 
 using std::vector;
 using std::pair;
@@ -146,9 +147,9 @@ string PhyloTree::dot() const
     return "digraph {\n" + rootNode->links() + "}";
 }
 
-double PhyloTree::likelihood()
+double PhyloTree::logLikelihood()
 {
-    double ret = 1.0;
+    double ret = 0.0;
 
     vector<vector<double> > siteLikelihoods = rootNode->likelihood(evModel);
 
@@ -161,7 +162,7 @@ double PhyloTree::likelihood()
             siteSum += (*jt);
         }
 
-        ret *= siteSum/4.0;
+        ret += log10(siteSum/4.0);
     }
 
     return ret;

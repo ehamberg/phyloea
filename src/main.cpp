@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
     Kimura *k = new Kimura(10);
     PhyloTree t(&x, k);
 
-    cout << t.likelihood() << '\n';
+    cout << t.logLikelihood() << '\n';
     cout << t.dot() << '\n';
 
     delete k;
