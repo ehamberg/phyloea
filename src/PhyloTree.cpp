@@ -33,6 +33,13 @@ PhyloTreeNode::PhyloTreeNode(string name, vector<char> states)
 
 PhyloTreeNode::~PhyloTreeNode()
 {
+    //cout << "bye from " << name << '\n';
+    //cout << "\tdeleting " << children.size() << " children..." << '\n';
+    // delete all children
+    vector<pair<PhyloTreeNode*, double> >::iterator it;
+    for (it = children.begin(); it != children.end(); it++) {
+        delete (*it).first;
+    }
 }
 
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {

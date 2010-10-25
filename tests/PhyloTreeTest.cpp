@@ -52,21 +52,16 @@ protected:
         tree1->addChild(new PhyloTreeNode(), 1.0);
 
         tree2->addChild(tree1, 1.0);
-        tree2->addChild(tree1, 1.0);
-        tree2->addChild(tree1, 1.0);
     }
 
     virtual ~PhyloTreeTest() {
         delete t;
-        delete tree1;
         delete tree2;
     }
 
     PhyloTree* t;
     PhyloTreeNode *tree1;
     PhyloTreeNode *tree2;
-
-
 };
 
 // test a simple tree for which the likelihood is known
