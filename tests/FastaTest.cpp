@@ -26,3 +26,7 @@ TEST_F(FastaTest, ReadFile) {
         delete *it;
     }
 }
+
+TEST_F(FastaTest, ReadInvalidFileDeathTest) {
+    ASSERT_DEATH(Fasta::readFastaFile("tests/invalid.fasta"), "n>=0");
+}
