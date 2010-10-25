@@ -105,7 +105,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     }
 
     if (children.empty()) { // leaf node
-        for (int i = 0; i < noStates(); i++) {
+        for (unsigned int i = 0; i < noStates(); i++) {
             likelihoods.push_back(leafLikelihood(states[i]));
         }
 
@@ -115,7 +115,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     double xs, ys;
     char nucleotides[4] = {'A', 'G', 'C', 'T' };
 
-    for (int i = 0; i < noStates(); i++) {
+    for (unsigned int i = 0; i < noStates(); i++) {
         vector<double> l;
         for (int s = 0; s < 4; s++) {
             xs = ys = 0.0;
