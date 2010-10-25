@@ -22,8 +22,8 @@ PhyloTreeNode::PhyloTreeNode()
     out << PhyloTreeNode::count++;
     out.str();
 
-    this->name = "node " + out.str();
-    this->nStates = 0;
+    name = "node " + out.str();
+    nStates = 0;
 }
 
 PhyloTreeNode::PhyloTreeNode(string name, vector<char> states)

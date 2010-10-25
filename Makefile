@@ -5,7 +5,7 @@ CXX=g++
 CXXFLAGS=-Wall -pedantic -Isrc -g
 
 LIBS=
-TARGET=main
+TARGET=./main
 
 TESTLIBS=-lgtest -lpthread
 TESTTARGET=tests/runtests
@@ -14,6 +14,9 @@ all: src/main.o $(OBJS) $(TESTOBJS)
 	$(CXX) src/main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
 	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
 	$(TESTTARGET) --gtest_shuffle
+
+memcheck:
+	valgrind --tool=memcheck --leak-check=yes $(TARGET)
 
 clean:
 	rm -f */*.o
