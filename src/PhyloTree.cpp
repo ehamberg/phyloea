@@ -120,16 +120,55 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     return likelihoods;
 }
 
-//def L(node, P):
-//    if node.likelihoods:
-//        return node.likelihoods
-//
-//    for s in ['A', 'G', 'C', 'T']:
-//        xs = ys = 0.0
-//        for x in ['A', 'G', 'C', 'T']:
-//            xs += P(s, x, node.t_l)*L(node.l, P)[x]
-//            ys += P(s, x, node.t_r)*L(node.r, P)[x]
-//
-//        node.likelihoods[s] = xs*ys
-//
-//    return node.likelihoods
+string PhyloTreeNode::links() const
+{
+    stringstream out;
+
+    for (unsigned int i = 0; i < children.size(); i++) {
+        out << "\t\"" << name << "\" -> \"" << children[i].first->getName()
+            << "\" [label=\"" << children[i].second << "\"];\n";
+
+        out << children[i].first->links();
+    }
+
+    return out.str();
+}
+
+ostream& operator<<(ostream& out, const PhyloTree& t)
+{
+    out << t.rootNode->links();
+
+    return out;
+}
+
+string PhyloTree::dot() const
+{
+    return "digraph {\n" + rootNode->links() + "}";
+}
+
+double PhyloTree::likelihood()
+{
+    double ret = 1.0;
+
+    vector<vector<double> > siteLikelihoods = rootNode->likelihood(evModel);
+
+    vector<vector<double> >::const_iterator it;
+    vector<double>::const_iterator jt;
+    for (it = siteLikelihoods.begin(); it != siteLikelihoods.end(); it++) {
+
+        double siteSum = 0.0;
+        for (jt = (*it).begin(); jt != (*it).end(); jt++) {
+            siteSum += (*jt);
+        }
+
+        ret *= siteSum/4.0;
+    }
+
+    return ret;
+}
+
+PhyloTree::~PhyloTree()
+{
+    delete evModel;
+    delete rootNode; // FIXME
+}

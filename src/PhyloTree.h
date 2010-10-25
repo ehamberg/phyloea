@@ -3,12 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <ostream>
 
 #include "EvolutionModel.h"
 
 using std::string;
 using std::vector;
 using std::pair;
+using std::ostream;
 
 // super class for all phylo tree nodes
 class PhyloTreeNode {
@@ -25,6 +27,13 @@ public:
 
     static int count;
 
+    string links() const;
+
+    friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
+    {
+        return (out << n.name);
+    }
+
 private:
     string name; // species/taxon name
     vector<char> states; // observed states for each site
@@ -36,10 +45,24 @@ private:
 
 // convenience class for managing a tree of PhyloTreeNodes
 class PhyloTree {
+public:
+    PhyloTree(PhyloTreeNode* r, EvolutionModel* m) : rootNode(r), evModel(m) {}
+    ~PhyloTree();
+
+    // returns the tree's height
     int height() const;
+
+    // returns the tree's total likelihood
+    double likelihood();
+
+    // returns string representation of tree in graphviz dot format
+    string dot() const;
+
+    friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
 private:
     PhyloTreeNode* rootNode;
+    EvolutionModel *evModel;
 };
 
 #endif
