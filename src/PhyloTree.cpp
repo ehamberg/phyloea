@@ -26,7 +26,7 @@ PhyloTreeNode::PhyloTreeNode()
     nStates = 0;
 }
 
-PhyloTreeNode::PhyloTreeNode(string name, vector<char> states)
+PhyloTreeNode::PhyloTreeNode(string name, string states)
 {
     this->name = name;
     this->states = states;

@@ -7,26 +7,15 @@ using std::cout;
 
 int main(int argc, const char *argv[])
 {
-    vector<char> states;
-    states.push_back('A');
-    states.push_back('A');
-    PhyloTreeNode* n1 = new PhyloTreeNode("species 1", states);
+    PhyloTreeNode* n1 = new PhyloTreeNode("species 1", "AA");
 
-    states[0] = 'C';
-    states[1] = 'C';
-    PhyloTreeNode* n2 = new PhyloTreeNode("species 2", states);
+    PhyloTreeNode* n2 = new PhyloTreeNode("species 2", "CC");
 
-    states[0] = 'C';
-    states[1] = 'C';
-    PhyloTreeNode* n3 = new PhyloTreeNode("species 3", states);
+    PhyloTreeNode* n3 = new PhyloTreeNode("species 3", "CC");
 
-    states[0] = 'C';
-    states[1] = 'C';
-    PhyloTreeNode* n4 = new PhyloTreeNode("species 4", states);
+    PhyloTreeNode* n4 = new PhyloTreeNode("species 4", "CC");
 
-    states[0] = 'G';
-    states[1] = 'G';
-    PhyloTreeNode* n5 = new PhyloTreeNode("species 5", states);
+    PhyloTreeNode* n5 = new PhyloTreeNode("species 5", "GG");
 
     PhyloTreeNode* y = new PhyloTreeNode;
     y->addChild(n1, 0.5);

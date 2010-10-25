@@ -16,7 +16,7 @@ using std::ostream;
 class PhyloTreeNode {
 public:
     PhyloTreeNode();
-    PhyloTreeNode(string name, vector<char> states);
+    PhyloTreeNode(string name, string states);
     ~PhyloTreeNode();
     const string getName() const { return name; }
     unsigned int noStates() const { return nStates; }
@@ -36,7 +36,7 @@ public:
 
 private:
     string name; // species/taxon name
-    vector<char> states; // observed states for each site
+    string states; // observed states for each site
     vector<pair<PhyloTreeNode*, double> > children; // child nodes together with a distance
     vector<vector<double> > likelihoods;
     vector<double> leafLikelihood(char n) const;
