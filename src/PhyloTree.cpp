@@ -90,10 +90,10 @@ vector<double> PhyloTreeNode::leafLikelihood(char n) const {
     case 'A':
         likelihoods[0] = 1.0;
         break;
-    case 'G':
+    case 'C':
         likelihoods[1] = 1.0;
         break;
-    case 'C':
+    case 'G':
         likelihoods[2] = 1.0;
         break;
     case 'T':
@@ -120,7 +120,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     }
 
     double xs, ys;
-    char nucleotides[4] = {'A', 'G', 'C', 'T' };
+    char nucleotides[4] = {'A', 'C', 'G', 'T' };
 
     for (unsigned int i = 0; i < noStates(); i++) {
         vector<double> l;

@@ -8,14 +8,14 @@ using std::exp;
 // helper function: returns true if given base is a purine
 bool isPuri(char b)
 {
-    assert(b == 'A' || b == 'G' || b == 'C' || b == 'T');
+    assert(b == 'A' || b == 'C' || b == 'G' || b == 'T');
     return (b == 'A' || b == 'G');
 }
 
 // helper function: returns true if given base is a pyrimidine
 bool isPyri(char b)
 {
-    assert(b == 'A' || b == 'G' || b == 'C' || b == 'T');
+    assert(b == 'A' || b == 'C' || b == 'G' || b == 'T');
     return (b == 'C' || b == 'T');
 }
 
