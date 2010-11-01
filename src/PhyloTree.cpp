@@ -183,10 +183,10 @@ double PhyloTree::logLikelihood()
 
     vector<vector<double> >::const_iterator it;
     vector<double>::const_iterator jt;
-    for (it = siteLikelihoods.begin(); it != siteLikelihoods.end(); it++) {
+    for (it = siteLikelihoods.begin(); it != siteLikelihoods.end(); ++it) {
 
         double siteSum = 0.0;
-        for (jt = (*it).begin(); jt != (*it).end(); jt++) {
+        for (jt = (*it).begin(); jt != (*it).end(); ++jt) {
             siteSum += (*jt);
         }
 

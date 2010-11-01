@@ -42,7 +42,7 @@ int main(int argc, const char *argv[])
     vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta");
 
     vector<PhyloTreeNode*>::iterator it;
-    for (it = nodes.begin(); it != nodes.end(); it++) {
+    for (it = nodes.begin(); it != nodes.end(); ++it) {
         delete *it;
     }
 
