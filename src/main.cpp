@@ -1,6 +1,8 @@
 #include "PhyloTree.h"
 #include "EvolutionModel.h"
 #include "Fasta.h"
+#include "EASystem.h"
+#include <cstdlib>
 #include <iostream>
 #include <cmath>
 
@@ -8,6 +10,8 @@ using std::cout;
 
 int main(int argc, const char *argv[])
 {
+    srand(time(NULL));
+
     PhyloTreeNode* n1 = new PhyloTreeNode("species 1", "AA");
 
     PhyloTreeNode* n2 = new PhyloTreeNode("species 2", "CC");
@@ -45,6 +49,21 @@ int main(int argc, const char *argv[])
     for (it = nodes.begin(); it != nodes.end(); ++it) {
         delete *it;
     }
+
+    vector<string> randomPop;
+    for (int i = 0; i < 10; i++) {
+        string s;
+        for (int j = 0; j < 10; j++) {
+            s += (char)(rand()%26+65);
+        }
+        randomPop.push_back(s);
+    }
+
+    cout << "ea\n";
+    EASystem<string> testEA;
+    testEA.setPopulation(randomPop);
+    testEA.runGenerations(10);
+    testEA.exportGenomes(cout);
 
     return 0;
 }
