@@ -6,6 +6,9 @@
 #include <iostream>
 #include <cmath>
 
+#include "EAOperators.h"
+#include "AMaxOperators.h"
+
 using std::cout;
 
 int main(int argc, const char *argv[])
@@ -51,7 +54,7 @@ int main(int argc, const char *argv[])
     }
 
     vector<string> randomPop;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 4; i++) {
         string s;
         for (int j = 0; j < 10; j++) {
             s += (char)(rand()%26+65);
@@ -60,9 +63,9 @@ int main(int argc, const char *argv[])
     }
 
     cout << "ea\n";
-    EASystem<string> testEA;
+    EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7));
     testEA.setPopulation(randomPop);
-    testEA.runGenerations(10);
+    testEA.runGenerations(5);
     testEA.exportGenomes(cout);
 
     return 0;

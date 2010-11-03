@@ -2,6 +2,7 @@
 #define EASYSTEM_H_INCLUDED
 
 #include <functional>
+#include <algorithm>
 #include <vector>
 #include <ostream>
 #include <istream>
@@ -10,11 +11,17 @@
 #include <sstream>
 #include <iostream>
 
+#include "EAOperators.h"
+
 using std::vector;
 using std::ostream;
 using std::istream;
 using std::string;
 using std::binary_function;
+
+void printVal(string i) {
+    std::cout << i << '\n';
+}
 
 // helper class for the runGenerations method: returns true after the given number
 // of generations have been generated
@@ -28,11 +35,25 @@ private:
     int m_noGenerations;
 };
 
+// class generator:
+struct c_unique {
+  int current;
+  c_unique() {current=0;}
+  int operator()() {return current++;}
+} UniqueNumber;
+
+class lt {
+    const vector<double>& _x;
+public:
+    lt(const vector<double>& x ) : _x(x) {}
+    bool operator()( double j, double k ) const { return _x[j] > _x[k]; }
+};
+
 template<typename T>
 class EASystem {
 public:
-    EASystem() {}
-    virtual ~EASystem() {}
+    EASystem(MutationOp<T>* m, RecombOp<T>* r) : m_mutOp(m), m_recOp(r) {}
+    virtual ~EASystem() { delete m_mutOp; delete m_recOp; }
 
     // the following two methods are made to facilitate the use of simdist
     void exportGenomes(ostream& out) const // write genomes to stdout
@@ -50,14 +71,13 @@ public:
 
         getline(in, values);
 
-        std::cout << values << '\n';
+        std::cout << "read fitvals: " << values << '\n';
 
         std::istringstream stm(values);
 
         double fitness;
         unsigned int i = 0;
         while (stm >> fitness) {
-            std::cout << "***\n";
             m_fitnessValues[i++] = fitness;
         }
 
@@ -67,29 +87,36 @@ public:
 
     vector<T> getNBest(unsigned int n) const // get the n best individuals
     {
-        // TODO:
-        // Create a vector i = {0,1,2,3,4,5} of sort indexes (std::generate should
-        // com in handy). Use the three argument sort, where the third argument
-        // references your vector x, to compare the elements of i based not on
-        // their own values but on the values they index in x:
-        //
-        // class lt {
-        // vector<int&_x;
-        // public:
-        // lt( vector<int& x ) : _x(x) {}
-        // bool comp( int j, int k ) const { return _x[j] < _x[k]; }
-        // };
-        // ....
-        // sort( i.begin(), i.end(), lt(x) );
-            }
+        assert(n <= m_population.size());
+        vector<int> indices(m_population.size());
+        vector<int>::iterator it;
 
-    // FIXME
+        std::generate(indices.begin(), indices.end(), UniqueNumber);
+        sort(indices.begin(), indices.end(), lt(m_fitnessValues));
+
+        vector<T> ret(n);
+        for (unsigned int i = 0; i < n; i++) {
+            ret.push_back(m_population[indices[i]]);
+        }
+
+        return ret;
+    }
+
     void runUntil(Generations<vector<T> > stoppingCriterion) // run until the given predicate, given fitness and gen. no, returns true
     {
         while (!stoppingCriterion(m_population, m_generationNumber++)) {
             std::cout << "Generation " << m_generationNumber << '\n';
             exportGenomes(std::cout);
             readFitnessValues(std::cin);
+
+            vector<T> newGeneration(m_population.size());
+
+            while (newGeneration.size() < m_population.size()) {
+            }
+
+            m_population = newGeneration;
+
+            //for_each(foo.begin(), foo.end(), printVal);
         }
     }
 
@@ -102,8 +129,6 @@ public:
     {
         m_population = pop;
         m_generationNumber = 0;
-        std::cout << m_population.size() << "lmao\n";
-        std::cout << pop.size() << "lmao\n";
         m_fitnessValues.resize(m_population.size());
     }
 
@@ -111,6 +136,8 @@ private:
     vector<T> m_population;
     vector<double> m_fitnessValues;
     int m_generationNumber;
+    MutationOp<T>* m_mutOp;
+    RecombOp<T>* m_recOp;
 };
 
 #endif
