@@ -53,7 +53,7 @@ template<typename T>
 class EASystem {
 public:
     EASystem(MutationOp<T>* m, RecombOp<T>* r) : m_mutOp(m), m_recOp(r) {}
-    virtual ~EASystem() { delete m_mutOp; delete m_recOp; }
+    virtual ~EASystem() { delete m_mutOp; delete m_recOp; delete m_selectionOp; }
 
     // the following two methods are made to facilitate the use of simdist
     void exportGenomes(ostream& out) const // write genomes to stdout
@@ -112,6 +112,8 @@ public:
             vector<T> newGeneration(m_population.size());
 
             while (newGeneration.size() < m_population.size()) {
+                T parent1 = m_selectionOp->select(m_population, m_fitnessValues);
+                T parent2 = m_selectionOp->select(m_population, m_fitnessValues);
             }
 
             m_population = newGeneration;
@@ -138,6 +140,7 @@ private:
     int m_generationNumber;
     MutationOp<T>* m_mutOp;
     RecombOp<T>* m_recOp;
+    SelectionOp<T>* m_selectionOp;
 };
 
 #endif
