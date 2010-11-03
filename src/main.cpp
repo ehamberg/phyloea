@@ -57,15 +57,15 @@ int main(int argc, const char *argv[])
     for (int i = 0; i < 4; i++) {
         string s;
         for (int j = 0; j < 10; j++) {
-            s += (char)(rand()%26+65);
+            s += (char)(rand()%5+(int)'A');
         }
         randomPop.push_back(s);
     }
 
     cout << "ea\n";
-    EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7));
+    EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7), new RouletteWheelSelection<string>);
     testEA.setPopulation(randomPop);
-    testEA.runGenerations(5);
+    testEA.runGenerations(10);
     testEA.exportGenomes(cout);
 
     return 0;

@@ -1,14 +1,15 @@
 #include "AMaxOperators.h"
 
 #include <cstdlib>
+#include <iostream>
 
 void MutateString::mutate(std::vector<std::string>& genomes)
 {
     std::vector<std::string>::iterator it;
-    for (it = genomes.begin(); it != genomes.end(); it++) {
+    for (it = genomes.begin(); it != genomes.end(); ++it) {
         for (unsigned int i = 0; i < it->length(); i++) {
-            if ((double)rand()/(double)RAND_MAX >= m_mutationRate) {
-                it[i] = 'Q';
+            if ((double)rand()/(double)RAND_MAX <= m_mutationRate) {
+                (*it)[i] = (char)(rand()%5+(int)'A');
             }
         }
     }

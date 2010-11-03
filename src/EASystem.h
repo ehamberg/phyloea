@@ -52,7 +52,8 @@ public:
 template<typename T>
 class EASystem {
 public:
-    EASystem(MutationOp<T>* m, RecombOp<T>* r) : m_mutOp(m), m_recOp(r) {}
+    EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T> *s)
+        : m_mutOp(m), m_recOp(r), m_selectionOp(s) {}
     virtual ~EASystem() { delete m_mutOp; delete m_recOp; delete m_selectionOp; }
 
     // the following two methods are made to facilitate the use of simdist
@@ -109,16 +110,28 @@ public:
             exportGenomes(std::cout);
             readFitnessValues(std::cin);
 
-            vector<T> newGeneration(m_population.size());
+            vector<T> newGeneration;
+            std::cout << "foox " << newGeneration.size() << '\n';
 
+            typename vector<T>::const_iterator it;
             while (newGeneration.size() < m_population.size()) {
                 T parent1 = m_selectionOp->select(m_population, m_fitnessValues);
                 T parent2 = m_selectionOp->select(m_population, m_fitnessValues);
+
+                // generate offspring ...
+                std::cout << "generating offspring\n";
+                vector<T> offspring = m_recOp->produceOffspring(parent1, parent2);
+
+                // ... and add these to the new generation
+                for (it = offspring.begin(); it != offspring.end(); ++it) {
+                    newGeneration.push_back(*it);
+                }
             }
 
+            m_mutOp->mutate(newGeneration);
             m_population = newGeneration;
 
-            //for_each(foo.begin(), foo.end(), printVal);
+            for_each(newGeneration.begin(), newGeneration.end(), printVal);
         }
     }
 
