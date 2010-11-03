@@ -22,8 +22,7 @@ using std::binary_function;
 // helper class for the runGenerations method: returns true after the given number
 // of generations have been generated
 template<typename T>
-class Generations : public binary_function<T, int, bool>
-{
+class Generations : public binary_function<T, int, bool> {
 public:
     Generations(int n) : m_noGenerations(n) {}
     bool operator()(T _, int genNo) { return genNo >= m_noGenerations; }
@@ -49,7 +48,7 @@ template<typename T>
 class EASystem {
 public:
     EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T> *s)
-        : m_mutOp(m), m_recOp(r), m_selectionOp(s) {}
+        : m_mutOp(m), m_recOp(r), m_selectionOp(s) { m_elitism = 0; }
     virtual ~EASystem() { delete m_mutOp; delete m_recOp; delete m_selectionOp; }
 
     // the following two methods are made to facilitate the use of simdist
@@ -108,6 +107,12 @@ public:
 
             vector<T> newGeneration;
 
+            if (m_elitism > 0) {
+                //std::cerr << "elitism: " << m_elitism << '\n';
+                vector<T> elite = getNBest(m_elitism);
+                newGeneration = elite;
+            }
+
             typename vector<T>::const_iterator it;
             while (newGeneration.size() < m_population.size()) {
                 T parent1 = m_selectionOp->select(m_population, m_fitnessValues);
@@ -125,8 +130,8 @@ public:
             m_mutOp->mutate(newGeneration);
             m_population = newGeneration;
 
-            std::cerr << "Generation " << m_generationNumber
-                << "\tavg. fitness:\t" << averageFitness() << '\n';
+            std::cerr << "Generation " << m_generationNumber << "\tavg:\t" <<
+                averageFitness() << "\tmax:\t" << highestFitness() << '\n';
         }
     }
 
@@ -145,21 +150,36 @@ public:
     double averageFitness()
     {
         double sum = 0;
-        for (dit = m_fitnessValues.begin(); dit != m_fitnessValues.end(); ++dit) {
-            sum += *dit;
+        for (cdit = m_fitnessValues.begin(); cdit != m_fitnessValues.end(); ++cdit) {
+            sum += *cdit;
         }
 
         return sum/m_fitnessValues.size();
     }
 
+    double highestFitness()
+    {
+        double highest = 0;
+        for (cdit = m_fitnessValues.begin(); cdit != m_fitnessValues.end(); ++cdit) {
+            if (*cdit > highest) {
+                highest = *cdit;
+            }
+        }
+
+        return highest;
+    }
+
+    void setElitism(int e) { m_elitism = e; }
+
 private:
     vector<T> m_population;
     vector<double> m_fitnessValues;
+    int m_elitism;
     int m_generationNumber;
     MutationOp<T>* m_mutOp;
     RecombOp<T>* m_recOp;
     SelectionOp<T>* m_selectionOp;
-    vector<double>::const_iterator dit;
+    vector<double>::const_iterator cdit;
 };
 
 #endif

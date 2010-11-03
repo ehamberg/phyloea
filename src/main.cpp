@@ -62,9 +62,10 @@ int main(int argc, const char *argv[])
         randomPop.push_back(s);
     }
 
-    EASystem<string> testEA(new MutateString(0.01), new RecombineString(0.7), new RouletteWheelSelection<string>);
+    EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7), new RouletteWheelSelection<string>);
+    testEA.setElitism(4);
     testEA.setPopulation(randomPop);
-    testEA.runGenerations(1000);
+    testEA.runGenerations(100);
     testEA.exportGenomes(cout);
 
     return 0;
