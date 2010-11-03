@@ -19,10 +19,6 @@ using std::istream;
 using std::string;
 using std::binary_function;
 
-void printVal(string i) {
-    std::cout << i << '\n';
-}
-
 // helper class for the runGenerations method: returns true after the given number
 // of generations have been generated
 template<typename T>
@@ -61,18 +57,19 @@ public:
     {
         typename vector<T>::const_iterator it;
         for (it = m_population.begin(); it != m_population.end(); ++it) {
-            out << *it << '\t';
+            out << *it << '\n';
         }
-        out << '\n';
     }
 
     void readFitnessValues(istream& in) // read fitness values from stdin
     {
         string values;
+        string temp;
 
-        getline(in, values);
-
-        std::cout << "read fitvals: " << values << '\n';
+        for (unsigned int i = 0; i < m_population.size(); ++i) {
+            in >> temp;
+            values += temp + '\n';
+        }
 
         std::istringstream stm(values);
 
@@ -106,12 +103,10 @@ public:
     void runUntil(Generations<vector<T> > stoppingCriterion) // run until the given predicate, given fitness and gen. no, returns true
     {
         while (!stoppingCriterion(m_population, m_generationNumber++)) {
-            std::cout << "Generation " << m_generationNumber << '\n';
             exportGenomes(std::cout);
             readFitnessValues(std::cin);
 
             vector<T> newGeneration;
-            std::cout << "foox " << newGeneration.size() << '\n';
 
             typename vector<T>::const_iterator it;
             while (newGeneration.size() < m_population.size()) {
@@ -119,7 +114,6 @@ public:
                 T parent2 = m_selectionOp->select(m_population, m_fitnessValues);
 
                 // generate offspring ...
-                std::cout << "generating offspring\n";
                 vector<T> offspring = m_recOp->produceOffspring(parent1, parent2);
 
                 // ... and add these to the new generation
@@ -131,7 +125,8 @@ public:
             m_mutOp->mutate(newGeneration);
             m_population = newGeneration;
 
-            for_each(newGeneration.begin(), newGeneration.end(), printVal);
+            std::cerr << "Generation " << m_generationNumber
+                << "\tavg. fitness:\t" << averageFitness() << '\n';
         }
     }
 
@@ -147,6 +142,16 @@ public:
         m_fitnessValues.resize(m_population.size());
     }
 
+    double averageFitness()
+    {
+        double sum = 0;
+        for (dit = m_fitnessValues.begin(); dit != m_fitnessValues.end(); ++dit) {
+            sum += *dit;
+        }
+
+        return sum/m_fitnessValues.size();
+    }
+
 private:
     vector<T> m_population;
     vector<double> m_fitnessValues;
@@ -154,6 +159,7 @@ private:
     MutationOp<T>* m_mutOp;
     RecombOp<T>* m_recOp;
     SelectionOp<T>* m_selectionOp;
+    vector<double>::const_iterator dit;
 };
 
 #endif

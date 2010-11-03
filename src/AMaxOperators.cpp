@@ -9,7 +9,7 @@ void MutateString::mutate(std::vector<std::string>& genomes)
     for (it = genomes.begin(); it != genomes.end(); ++it) {
         for (unsigned int i = 0; i < it->length(); i++) {
             if ((double)rand()/(double)RAND_MAX <= m_mutationRate) {
-                (*it)[i] = (char)(rand()%5+(int)'A');
+                (*it)[i] = (char)(rand()%2+(int)'0');
             }
         }
     }
