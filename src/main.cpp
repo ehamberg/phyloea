@@ -62,7 +62,7 @@ int main(int argc, const char *argv[])
         randomPop.push_back(s);
     }
 
-    EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7), new RouletteWheelSelection<string>);
+    EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7), new RouletteWheelSelection<string>, new PipeFitnessFunc<string>);
     testEA.setLogStream(&std::cerr);
     testEA.setElitism(4);
     testEA.setPopulation(randomPop);

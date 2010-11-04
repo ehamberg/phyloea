@@ -13,46 +13,32 @@ void print(T s) {
 }
 
 template <typename T>
-EASystem<T>::EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T> *s)
+EASystem<T>::EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T>* s, FitnessFunc<T>* f)
 {
     m_elitism = 0;
     m_mutOp = m;
     m_recOp = r;
     m_selectionOp = s;
+    m_fitnessFunc = f;
     m_logStream = NULL;
 }
 
-// the following two methods are made to facilitate the use of simdist
 template <typename T>
-void EASystem<T>::exportGenomes(ostream& out) const // write genomes to stdout
+EASystem<T>::~EASystem()
+{
+    delete m_mutOp;
+    delete m_recOp;
+    delete m_selectionOp;
+    delete m_fitnessFunc;
+}
+
+template <typename T>
+void EASystem<T>::exportGenomes(ostream& out) const // write genomes to stream
 {
     typename vector<T>::const_iterator it;
     for (it = m_population.begin(); it != m_population.end(); ++it) {
         out << *it << '\n';
     }
-}
-
-template<typename T>
-void EASystem<T>::readFitnessValues(istream& in) // read fitness values from stdin
-{
-    string values;
-    string temp;
-
-    for (unsigned int i = 0; i < m_population.size(); ++i) {
-        in >> temp;
-        values += temp + '\n';
-    }
-
-    std::istringstream stm(values);
-
-    double fitness;
-    unsigned int i = 0;
-    while (stm >> fitness) {
-        m_fitnessValues[i++] = fitness;
-    }
-
-    assert(i == m_population.size());
-    assert(m_population.size() == m_fitnessValues.size());
 }
 
 template <typename T>
@@ -81,8 +67,11 @@ template <typename T>
 void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
 {
     while (!stoppingCriterion(m_population, m_generationNumber++)) {
-        exportGenomes(std::cout);
-        readFitnessValues(std::cin);
+        //exportGenomes(std::cout);
+        //readFitnessValues(std::cin);
+
+        // get fitness for all genomes
+        m_fitnessValues = m_fitnessFunc->fitness(m_population);
 
         vector<T> newGeneration;
 
@@ -162,7 +151,8 @@ double EASystem<T>::maxFitness() const // TODO : const
 }
 
 // force methods for std::string
-template EASystem<std::string>::EASystem(MutationOp<std::string>* m, RecombOp<std::string>* r, SelectionOp<std::string> *s);
+template EASystem<std::string>::EASystem(MutationOp<std::string>* m, RecombOp<std::string>* r, SelectionOp<std::string> *s, FitnessFunc<std::string>* f);
+template EASystem<std::string>::~EASystem();
 template void EASystem<std::string>::exportGenomes(ostream& out) const;
 template void EASystem<std::string>::setPopulation(vector<std::string> pop);
 template void EASystem<std::string>::runGenerations(unsigned int noGenerations);

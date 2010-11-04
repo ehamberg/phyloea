@@ -40,11 +40,10 @@ public:
 template<typename T>
 class EASystem {
 public:
-    EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T> *s);
-    virtual ~EASystem() { delete m_mutOp; delete m_recOp; delete m_selectionOp; }
+    EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T> *s, FitnessFunc<T>* f);
+    virtual ~EASystem();
 
     void exportGenomes(ostream& out) const; // write genomes to stdout
-    void readFitnessValues(istream& in); // read fitness values from stdin
     vector<T> getNBest(unsigned int n) const;
     void runUntil(Generations<vector<T> > stoppingCriterion); // run until the given predicate, given fitness and gen. no, returns true
     void runGenerations(unsigned int noGenerations); // utility method: run for given number of generations
@@ -59,10 +58,11 @@ private:
     vector<double> m_fitnessValues;
     int m_elitism;
     int m_generationNumber;
+    std::ostream* m_logStream;
     MutationOp<T>* m_mutOp;
     RecombOp<T>* m_recOp;
     SelectionOp<T>* m_selectionOp;
-    std::ostream* m_logStream;
+    FitnessFunc<T>* m_fitnessFunc;
 };
 
 #endif

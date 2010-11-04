@@ -4,6 +4,8 @@
 #include <vector>
 #include <cassert>
 #include <cstdlib>
+#include <iostream>
+#include <sstream>
 
 template<typename T>
 class MutationOp {
@@ -28,6 +30,15 @@ public:
     virtual ~SelectionOp() {}
     virtual const T& select(const std::vector<T>& pop, const std::vector<double> fitness) = 0;
 };
+
+template <typename T>
+class FitnessFunc {
+public:
+    FitnessFunc() {}
+    virtual ~FitnessFunc() {}
+    virtual std::vector<double> fitness(const std::vector<T>& genomes) = 0;
+};
+
 
 // some pretty standard selection schemes
 template<typename T>
@@ -62,6 +73,44 @@ public:
         }
 
         return pop[i];
+    }
+};
+
+// for simdist use: print
+template<typename T>
+class PipeFitnessFunc : public FitnessFunc<T> {
+public:
+    PipeFitnessFunc() {}
+    virtual ~PipeFitnessFunc() {}
+    virtual std::vector<double> fitness(const std::vector<T>& genomes)
+    {
+        std::vector<double> fitnessVals(genomes.size());
+
+        typename std::vector<T>::const_iterator it;
+        for (it = genomes.begin(); it != genomes.end(); ++it) {
+            std::cout << *it << '\n';
+        }
+
+        std::string values;
+        std::string temp;
+
+        for (unsigned int i = 0; i < genomes.size(); ++i) {
+            std::cin >> temp;
+            values += temp + '\n';
+        }
+
+        std::istringstream stm(values);
+
+        double fitness;
+        unsigned int i = 0;
+        while (stm >> fitness) {
+            fitnessVals[i++] = fitness;
+        }
+
+        assert(i == genomes.size());
+        assert(genomes.size() == fitnessVals.size());
+
+        return fitnessVals;
     }
 };
 
