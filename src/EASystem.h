@@ -43,7 +43,9 @@ public:
     EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T> *s, FitnessFunc<T>* f);
     virtual ~EASystem();
 
-    void exportGenomes(ostream& out) const; // write genomes to stdout
+    // write genomes to given stream, sorted according to fitness in descending
+    // order
+    void exportGenomes(ostream& out) const;
     vector<T> getNBest(unsigned int n) const;
     void runUntil(Generations<vector<T> > stoppingCriterion); // run until the given predicate, given fitness and gen. no, returns true
     void runGenerations(unsigned int noGenerations); // utility method: run for given number of generations

@@ -31,8 +31,10 @@ EASystem<T>::~EASystem()
 template <typename T>
 void EASystem<T>::exportGenomes(ostream& out) const
 {
+    vector<T> sorted = getNBest(m_population.size());
+
     typename vector<T>::const_iterator it;
-    for (it = m_population.begin(); it != m_population.end(); ++it) {
+    for (it = sorted.begin(); it != sorted.end(); ++it) {
         out << *it << '\n';
     }
 }
