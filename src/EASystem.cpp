@@ -21,6 +21,7 @@ EASystem<T>::EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T>* s, Fitne
     m_selectionOp = s;
     m_fitnessFunc = f;
     m_logStream = NULL;
+    m_debugging = false;
 }
 
 template <typename T>
@@ -102,10 +103,14 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
         m_population = newGeneration;
 
         if (m_logStream) {
-            *m_logStream << averageFitness() << '\t' << maxFitness() << '\n';
+            *m_logStream << averageFitness() << '\t' << maxFitness() << '\t'
+                << minFitness() << '\n';
         }
-        std::cerr << "Generation " << m_generationNumber << "\tavg:\t" <<
-            averageFitness() << "\tmax:\t" << maxFitness() << '\n';
+        if (m_debugging) {
+            std::cerr << "Generation " << m_generationNumber << "\tavg:\t" <<
+                averageFitness() << "\tmax:\t" << maxFitness() << "\tmin: "
+                << minFitness() << '\n';
+        }
     }
 }
 
@@ -139,15 +144,29 @@ double EASystem<T>::averageFitness() const
 template <typename T>
 double EASystem<T>::maxFitness() const // TODO : const
 {
-    double highest = 0;
+    double highest = m_fitnessValues.at(1);
     vector<double>::const_iterator cdit;
-    for (cdit = m_fitnessValues.begin(); cdit != m_fitnessValues.end(); ++cdit) {
+    for (cdit = m_fitnessValues.begin()+1; cdit != m_fitnessValues.end(); ++cdit) {
         if (*cdit > highest) {
             highest = *cdit;
         }
     }
 
     return highest;
+}
+
+template <typename T>
+double EASystem<T>::minFitness() const // TODO : const
+{
+    double lowest = m_fitnessValues.at(0);
+    vector<double>::const_iterator cdit;
+    for (cdit = m_fitnessValues.begin()+1; cdit != m_fitnessValues.end(); ++cdit) {
+        if (*cdit < lowest) {
+            lowest = *cdit;
+        }
+    }
+
+    return lowest;
 }
 
 // force methods for std::string

@@ -50,8 +50,10 @@ public:
     void setPopulation(vector<T> pop);
     double averageFitness() const;
     double maxFitness() const;
+    double minFitness() const;
     void setElitism(int e) { m_elitism = e; }
     void setLogStream(std::ostream* s) { m_logStream = s; }
+    void setDebugging(bool b) { m_debugging = b; }
 
 private:
     vector<T> m_population;
@@ -63,6 +65,7 @@ private:
     RecombOp<T>* m_recOp;
     SelectionOp<T>* m_selectionOp;
     FitnessFunc<T>* m_fitnessFunc;
+    bool m_debugging; // if true, debug information will be written to stderr
 };
 
 #endif
