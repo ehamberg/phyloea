@@ -10,6 +10,7 @@
 #include "AMaxOperators.h"
 
 using std::cout;
+using std::cerr;
 
 int main(int argc, const char *argv[])
 {
@@ -63,11 +64,14 @@ int main(int argc, const char *argv[])
     }
 
     EASystem<string> testEA(new MutateString(0.1), new RecombineString(0.7), new RouletteWheelSelection<string>, new PipeFitnessFunc<string>);
-    testEA.setLogStream(&std::cerr);
-    testEA.setElitism(4);
+    //testEA.setLogStream(&cerr);
+    //testEA.setElitism(4);
+    testEA.setDebugging(true);
     testEA.setPopulation(randomPop);
-    testEA.runGenerations(100);
-    testEA.exportGenomes(cout);
+    testEA.runGenerations(10);
+
+    cerr << "Final generation:\n";
+    testEA.exportGenomes(cerr);
 
     return 0;
 }

@@ -7,11 +7,6 @@ struct c_unique {
   int operator()() {return current++;}
 } NextNum;
 
-template<typename T>
-void print(T s) {
-    std::cerr << s << '\n';
-}
-
 template <typename T>
 EASystem<T>::EASystem(MutationOp<T>* m, RecombOp<T>* r, SelectionOp<T>* s, FitnessFunc<T>* f)
 {
@@ -34,7 +29,7 @@ EASystem<T>::~EASystem()
 }
 
 template <typename T>
-void EASystem<T>::exportGenomes(ostream& out) const // write genomes to stream
+void EASystem<T>::exportGenomes(ostream& out) const
 {
     typename vector<T>::const_iterator it;
     for (it = m_population.begin(); it != m_population.end(); ++it) {
@@ -67,10 +62,10 @@ vector<T> EASystem<T>::getNBest(unsigned int n) const // get the n best individu
 template <typename T>
 void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
 {
+    assert(m_population.size() > 0);
+
     while (!stoppingCriterion(m_population, m_generationNumber++)) {
         // get fitness for all genomes
-        m_fitnessValues = m_fitnessFunc->fitness(m_population);
-
         vector<T> newGeneration;
 
         typename vector<T>::const_iterator it;
@@ -98,6 +93,7 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
         }
 
         m_population = newGeneration;
+        m_fitnessValues = m_fitnessFunc->fitness(m_population);
 
         if (m_logStream) {
             *m_logStream << averageFitness() << '\t' << maxFitness() << '\t'
@@ -124,6 +120,7 @@ void EASystem<T>::setPopulation(vector<T> pop)
     m_population = pop;
     m_generationNumber = 0;
     m_fitnessValues.resize(m_population.size());
+    m_fitnessValues = m_fitnessFunc->fitness(m_population);
 }
 
 template <typename T>
@@ -139,7 +136,7 @@ double EASystem<T>::averageFitness() const
 }
 
 template <typename T>
-double EASystem<T>::maxFitness() const // TODO : const
+double EASystem<T>::maxFitness() const
 {
     double highest = m_fitnessValues.at(1);
     vector<double>::const_iterator cdit;
@@ -153,7 +150,7 @@ double EASystem<T>::maxFitness() const // TODO : const
 }
 
 template <typename T>
-double EASystem<T>::minFitness() const // TODO : const
+double EASystem<T>::minFitness() const
 {
     double lowest = m_fitnessValues.at(0);
     vector<double>::const_iterator cdit;
