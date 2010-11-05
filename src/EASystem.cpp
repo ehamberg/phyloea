@@ -68,9 +68,6 @@ template <typename T>
 void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
 {
     while (!stoppingCriterion(m_population, m_generationNumber++)) {
-        //exportGenomes(std::cout);
-        //readFitnessValues(std::cin);
-
         // get fitness for all genomes
         m_fitnessValues = m_fitnessFunc->fitness(m_population);
 
@@ -90,7 +87,7 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
             }
         }
 
-        m_mutOp->mutate(newGeneration); // FIXME: lmao, don't mutate the elite!
+        m_mutOp->mutate(newGeneration);
 
         // if we have elitism, add the best individuals to the next gen. directly
         if (m_elitism > 0) {
