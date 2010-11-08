@@ -22,101 +22,101 @@ PhyloTreeNode::PhyloTreeNode()
     out << PhyloTreeNode::count++;
     out.str();
 
-    name = "node " + out.str();
-    nStates = 0;
+    m_name = "node " + out.str();
+    m_nStates = 0;
 
-    left = right = NULL;
+    m_left = m_right = NULL;
 }
 
 PhyloTreeNode::PhyloTreeNode(string name, string states)
 {
-    this->name = name;
-    this->states = states;
-    this->nStates = states.size();
+    m_name = name;
+    m_states = states;
+    m_nStates = m_states.size();
 
-    left = right = NULL;
+    m_left = m_right = NULL;
 }
 
 PhyloTreeNode::~PhyloTreeNode()
 {
     // delete children
-    delete left;
-    delete right;
+    delete m_left;
+    delete m_right;
 }
 
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
-    assert(!left or !right); // only two child nodes are allowed
+    assert(!m_left or !m_right); // only two child nodes are allowed
 
-    if (nStates == 0) {
-        nStates = child->noStates();
+    if (m_nStates == 0) {
+        m_nStates = child->noStates();
     } else {
-        assert(nStates == child->noStates());
+        assert(m_nStates == child->noStates());
     }
 
-    if (!left) {
-        left = child;
-        leftDist = distance;
-    } else if (!right) {
-        right = child;
-        rightDist = distance;
+    if (!m_left) {
+        m_left = child;
+        m_leftDist = distance;
+    } else if (!m_right) {
+        m_right = child;
+        m_rightDist = distance;
     }
 }
 
 int PhyloTreeNode::height() const
 {
-    if (!left and !right) {
+    if (!m_left and !m_right) {
         return 1;
     }
 
-    if (!right) {
-        return 1+left->height();
+    if (!m_right) {
+        return 1+m_left->height();
     }
 
-    return 1+MAX(left->height(), right->height());
+    return 1+MAX(m_left->height(), m_right->height());
 }
 
 int PhyloTree::height() const
 {
-    return rootNode->height();
+    return m_rootNode->height();
 }
 
 vector<double> PhyloTreeNode::leafLikelihood(char n) const {
-    vector<double> likelihoods;
+    vector<double> m_likelihoods;
     for (int i = 0; i < 4; i++) {
-        likelihoods.push_back(0.0);
+        m_likelihoods.push_back(0.0);
     }
 
     switch (n) {
     case 'A':
-        likelihoods[0] = 1.0;
+        m_likelihoods[0] = 1.0;
         break;
     case 'C':
-        likelihoods[1] = 1.0;
+        m_likelihoods[1] = 1.0;
         break;
     case 'G':
-        likelihoods[2] = 1.0;
+        m_likelihoods[2] = 1.0;
         break;
     case 'T':
-        likelihoods[3] = 1.0;
+        m_likelihoods[3] = 1.0;
         break;
     }
 
-    return likelihoods;
+    return m_likelihoods;
 }
 
 vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 {
     //  base case: we have already found likelihoods for the node
-    if (!likelihoods.empty()) {
-        return likelihoods;
+    if (!m_likelihoods.empty()) {
+        return m_likelihoods;
     }
 
-    if (!left and !right) { // leaf node
+    if (!m_left and !m_right) { // leaf node
         for (unsigned int i = 0; i < noStates(); i++) {
-            likelihoods.push_back(leafLikelihood(states[i]));
+            m_likelihoods.push_back(leafLikelihood(m_states[i]));
         }
 
-        return likelihoods;
+        return m_likelihoods;
     }
 
     double xs, ys;
@@ -127,20 +127,20 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
         for (int s = 0; s < 4; s++) {
             xs = ys = 0.0;
             for (int x = 0; x < 4; x++) {
-                double p1 = eModel->P(nucleotides[s], nucleotides[x], leftDist);
-                double p2 = eModel->P(nucleotides[s], nucleotides[x], rightDist);
-                double l1 = left->likelihood(eModel)[i][x];
-                double l2 = right->likelihood(eModel)[i][x];
+                double p1 = eModel->P(nucleotides[s], nucleotides[x], m_leftDist);
+                double p2 = eModel->P(nucleotides[s], nucleotides[x], m_rightDist);
+                double l1 = m_left->likelihood(eModel)[i][x];
+                double l2 = m_right->likelihood(eModel)[i][x];
                 xs += p1*l1;
                 ys += p2*l2;
             }
             l.push_back(xs*ys);
         }
 
-        likelihoods.push_back(l);
+        m_likelihoods.push_back(l);
     }
 
-    return likelihoods;
+    return m_likelihoods;
 }
 
 // print all links from this node to child nodes in graphviz format
@@ -148,16 +148,16 @@ string PhyloTreeNode::links() const
 {
     stringstream out;
 
-    if (left) {
-        out << "\t\"" << name << "\" -> \"" << left->getName()
-            << "\" [label=\"" << leftDist << "\"];\n";
-        out << left->links();
+    if (m_left) {
+        out << "\t\"" << m_name << "\" -> \"" << m_left->getName()
+            << "\" [label=\"" << m_leftDist << "\"];\n";
+        out << m_left->links();
     }
 
-    if (right) {
-        out << "\t\"" << name << "\" -> \"" << right->getName()
-            << "\" [label=\"" << leftDist << "\"];\n";
-        out << right->links();
+    if (m_right) {
+        out << "\t\"" << m_name << "\" -> \"" << m_right->getName()
+            << "\" [label=\"" << m_leftDist << "\"];\n";
+        out << m_right->links();
     }
 
     return out.str();
@@ -165,21 +165,21 @@ string PhyloTreeNode::links() const
 
 ostream& operator<<(ostream& out, const PhyloTree& t)
 {
-    out << t.rootNode->links();
+    out << t.m_rootNode->links();
 
     return out;
 }
 
 string PhyloTree::dot() const
 {
-    return "digraph {\n" + rootNode->links() + "}";
+    return "digraph {\n" + m_rootNode->links() + "}";
 }
 
 double PhyloTree::logLikelihood()
 {
     double ret = 0.0;
 
-    vector<vector<double> > siteLikelihoods = rootNode->likelihood(evModel);
+    vector<vector<double> > siteLikelihoods = m_rootNode->likelihood(m_evModel);
 
     vector<vector<double> >::const_iterator it;
     vector<double>::const_iterator jt;
@@ -198,6 +198,6 @@ double PhyloTree::logLikelihood()
 
 PhyloTree::~PhyloTree()
 {
-    delete evModel;
-    delete rootNode; // FIXME
+    delete m_evModel;
+    delete m_rootNode;
 }

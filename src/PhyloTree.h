@@ -18,8 +18,8 @@ public:
     PhyloTreeNode();
     PhyloTreeNode(string name, string states);
     ~PhyloTreeNode();
-    const string getName() const { return name; }
-    unsigned int noStates() const { return nStates; }
+    const string getName() const { return m_name; }
+    unsigned int noStates() const { return m_nStates; }
     int height() const;
     void addChild(PhyloTreeNode*, double);
 
@@ -31,29 +31,30 @@ public:
 
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
-        return (out << n.name);
+        return (out << n.m_name);
     }
 
 private:
-    string name; // species/taxon name
-    string states; // observed states for each site
+    string m_name; // species/taxon name
+    string m_states; // observed states for each site
 
     // child nodes together with a distance
-    PhyloTreeNode* left;
-    PhyloTreeNode* right;
-    double leftDist;
-    double rightDist;
+    PhyloTreeNode* m_left;
+    PhyloTreeNode* m_right;
+    double m_leftDist;
+    double m_rightDist;
 
-    vector<vector<double> > likelihoods;
     vector<double> leafLikelihood(char n) const;
-    unsigned int nStates;
+
+    vector<vector<double> > m_likelihoods;
+    unsigned int m_nStates;
 };
 
 
 // convenience class for managing a tree of PhyloTreeNodes
 class PhyloTree {
 public:
-    PhyloTree(PhyloTreeNode* r, EvolutionModel* m) : rootNode(r), evModel(m) {}
+    PhyloTree(PhyloTreeNode* r, EvolutionModel* m) : m_rootNode(r), m_evModel(m) {}
     ~PhyloTree();
 
     // returns the tree's height
@@ -68,8 +69,8 @@ public:
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
 private:
-    PhyloTreeNode* rootNode;
-    EvolutionModel *evModel;
+    PhyloTreeNode* m_rootNode;
+    EvolutionModel *m_evModel;
 };
 
 #endif
