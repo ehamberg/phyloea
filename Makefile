@@ -13,7 +13,7 @@ TESTTARGET=tests/runtests
 all: src/main.o $(OBJS) $(TESTOBJS)
 	$(CXX) src/main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
 	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
-	$(TESTTARGET) --gtest_shuffle
+	$(TESTTARGET) --gtest_shuffle 2> /dev/null
 
 memcheck:
 	valgrind --tool=memcheck --leak-check=yes $(TARGET)
