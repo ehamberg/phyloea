@@ -9,15 +9,15 @@
 class PhyloTreeTest : public ::testing::Test {
 protected:
     PhyloTreeTest() {
-        PhyloTreeNode* n1 = new PhyloTreeNode("species 1", "A");
+        PhyloTreeNode* n1 = new PhyloTreeNode("s1", "A");
 
-        PhyloTreeNode* n2 = new PhyloTreeNode("species 2", "C");
+        PhyloTreeNode* n2 = new PhyloTreeNode("s2", "C");
 
-        PhyloTreeNode* n3 = new PhyloTreeNode("species 3", "C");
+        PhyloTreeNode* n3 = new PhyloTreeNode("s3", "C");
 
-        PhyloTreeNode* n4 = new PhyloTreeNode("species 4", "C");
+        PhyloTreeNode* n4 = new PhyloTreeNode("s4", "C");
 
-        PhyloTreeNode* n5 = new PhyloTreeNode("species 5", "G");
+        PhyloTreeNode* n5 = new PhyloTreeNode("s5", "G");
 
         PhyloTreeNode* y = new PhyloTreeNode();
         y->addChild(n1, 0.5);
@@ -60,6 +60,11 @@ protected:
 // test a simple tree for which the likelihood is known
 TEST_F(PhyloTreeTest, SimpleTreeLikelihood) {
     ASSERT_FLOAT_EQ(0.0000294480138762, pow(10.0, t->logLikelihood()));
+}
+
+TEST_F(PhyloTreeTest, NewickExportTest) {
+    ASSERT_EQ("((s1:0.5,s2:0.5):0.5,(s3:0.5,(s4:0.5,s5:0.5):0.5):0.5);", t->newick());
+
 }
 
 TEST_F(PhyloTreeTest, TreeHeight) {

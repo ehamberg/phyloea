@@ -4,11 +4,13 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <cstdio>
+#include <algorithm>
 
 using std::vector;
 using std::pair;
 using std::string;
-using std::stringstream;
+using std::ostringstream;
 using std::cout;
 
 #define MAX(x,y) (x>y?x:y)
@@ -18,11 +20,11 @@ int PhyloTreeNode::count = 0;
 PhyloTreeNode::PhyloTreeNode()
 {
     // generate a name for this node of the form “node #”
-    stringstream out;
+    ostringstream out;
     out << PhyloTreeNode::count++;
     out.str();
 
-    m_name = "node " + out.str();
+    m_name = "";//"node " + out.str();
     m_nStates = 0;
 
     m_left = m_right = NULL;
@@ -146,7 +148,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 // print all links from this node to child nodes in graphviz format
 string PhyloTreeNode::links() const
 {
-    stringstream out;
+    ostringstream out;
 
     if (m_left) {
         out << "\t\"" << m_name << "\" -> \"" << m_left->getName()
@@ -163,6 +165,22 @@ string PhyloTreeNode::links() const
     return out.str();
 }
 
+string PhyloTreeNode::newick() const
+{
+    char s[256];
+
+    if (!m_left or !m_right) {
+        assert(!m_left and !m_right);
+        return m_name;
+    } else {
+        std::sprintf(s, "(%s:%.1f,%s:%.1f)%s", m_left->newick().c_str(),
+                m_leftDist, m_right->newick().c_str(), m_rightDist,
+                m_name.c_str());
+    }
+
+    return string(s);
+}
+
 ostream& operator<<(ostream& out, const PhyloTree& t)
 {
     out << t.m_rootNode->links();
@@ -172,7 +190,18 @@ ostream& operator<<(ostream& out, const PhyloTree& t)
 
 string PhyloTree::dot() const
 {
-    return "digraph {\n" + m_rootNode->links() + "}";
+    return "digraph {\n" + m_rootNode->links() + "}\n";
+}
+
+string PhyloTree::newick() const
+{
+    PhyloTreeNode* t = m_rootNode;
+
+    string newick = t->newick()/*+t->name()*/+';';
+    std::replace(newick.begin(), newick.end(), ' ', '_');
+    //"(((s4:05,s5:0.5)node_1:0.5,s3:0.5)node_2:0.5,(s1:0.5,s2:0.5)node_0:0.5)node_3;"
+
+    return newick;
 }
 
 double PhyloTree::logLikelihood()

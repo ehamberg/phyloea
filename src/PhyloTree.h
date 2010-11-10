@@ -29,6 +29,11 @@ public:
 
     string links() const;
 
+    // returns string representation of tree in the newick format
+    string newick() const;
+
+    string name() const { return m_name; }
+
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
         return (out << n.m_name);
@@ -65,6 +70,9 @@ public:
 
     // returns string representation of tree in graphviz dot format
     string dot() const;
+
+    // returns string representation of tree in the newick format
+    string newick() const;
 
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
