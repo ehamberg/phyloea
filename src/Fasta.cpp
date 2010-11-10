@@ -1,15 +1,18 @@
 #include <fstream>
 #include <cassert>
 #include <iostream>
+#include <set>
 
 #include "Fasta.h"
 
 using std::ifstream;
 using std::ios;
+using std::cerr;
+using std::set;
 
 using namespace std;
 
-vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
+vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, bool removeGaps)
 {
     vector<PhyloTreeNode*> nodes;
 
@@ -42,13 +45,39 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
     }
     fastaFile.close();
 
-    //vector<string>::const_iterator it;
-    //cout << "read " << (n+1) << " data sets:\n";
-    //for (it = descriptions.begin(); it != descriptions.end(); it++) {
-        //cout << '\t' << *it << '\n';
-    //}
-
     assert(data.size() == descriptions.size());
+
+    if (removeGaps) {
+        set<unsigned int> gapSites;
+
+        // record all gap sites ...
+        vector<string>::iterator it;
+        for (it = data.begin(); it != data.end(); ++it) {
+            for (unsigned int i = 0; i < it->length(); i++) {
+                if (it->at(i) == '-') {
+                    gapSites.insert(i);
+                }
+            }
+        }
+
+        cerr << "Removing " << gapSites.size() << " gaps...\n";
+
+        // ... then remove those sites from all sequences
+        set<unsigned int>::iterator jt;
+        for (it = data.begin(); it != data.end(); ++it) {
+            unsigned int i = 0;
+            for (jt = gapSites.begin(); jt != gapSites.end(); ++jt) {
+                cerr << (*jt+i) << '\n';
+                it->erase(*jt+(i--), 1);
+            }
+        }
+    }
+
+    cerr << "Read " << data.size() << " sequences:\n";
+    for (unsigned int i = 0; i < data.size(); i++) {
+        cerr << '\t' << descriptions[i] << " (length: " << data[i].length() << '\n';
+    }
+
 
     for (unsigned int i = 0; i < data.size(); i++) {
         nodes.push_back(new PhyloTreeNode(descriptions[i], data[i]));

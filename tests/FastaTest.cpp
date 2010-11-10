@@ -31,6 +31,20 @@ TEST_F(FastaTest, ReadFile) {
     }
 }
 
+TEST_F(FastaTest, ReadFileRemoveGaps) {
+    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta", true);
+
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+        ASSERT_EQ(15249, nodes[i]->noStates());
+    }
+
+    vector<PhyloTreeNode*>::iterator it;
+    for (it = nodes.begin(); it != nodes.end(); it++) {
+        delete *it;
+    }
+}
+
+
 TEST_F(FastaTest, ReadInvalidFileDeathTest) {
     ASSERT_DEATH(Fasta::readFastaFile("tests/invalid.fasta"), "n>=0");
 }
