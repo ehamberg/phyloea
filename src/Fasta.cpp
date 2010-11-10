@@ -23,14 +23,13 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
     int n = -1;
     string line;
 
-    while (fastaFile.good()) {
-      fastaFile >> line;// (fastaFile, line);
+    while (fastaFile >> line && !fastaFile.eof()) {
       if (line[0] == '>' or line[0] == ';') {
           if (!readingComment) {
               readingComment = true;
               n++;
-              descriptions.push_back("");
-              data.push_back("");
+              descriptions.push_back(string());
+              data.push_back(string());
           }
 
           descriptions.back() += line.substr(1);
