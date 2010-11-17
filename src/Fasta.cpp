@@ -67,7 +67,6 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, bool removeGaps)
         for (it = data.begin(); it != data.end(); ++it) {
             unsigned int i = 0;
             for (jt = gapSites.begin(); jt != gapSites.end(); ++jt) {
-                cerr << (*jt+i) << '\n';
                 it->erase(*jt+(i--), 1);
             }
         }
