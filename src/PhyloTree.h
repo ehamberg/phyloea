@@ -70,6 +70,7 @@ private:
 // convenience class for managing a tree of PhyloTreeNodes
 class PhyloTree {
 public:
+    PhyloTree() { m_rootNode = 0; m_evModel = 0; }
     PhyloTree(PhyloTreeNode* r, EvolutionModel* m) : m_rootNode(r), m_evModel(m) {}
     ~PhyloTree();
 
