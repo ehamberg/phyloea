@@ -17,8 +17,10 @@ using std::cout;
 
 int PhyloTreeNode::count = 0;
 
-PhyloTreeNode::PhyloTreeNode()
+PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent)
 {
+    m_parent = parent;
+
     // generate a name for this node of the form “node #”
     ostringstream out;
     out << PhyloTreeNode::count++;
@@ -30,8 +32,9 @@ PhyloTreeNode::PhyloTreeNode()
     m_left = m_right = NULL;
 }
 
-PhyloTreeNode::PhyloTreeNode(string name, string states)
+PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent, string name, string states)
 {
+    m_parent = parent;
     m_name = name;
     m_states = states;
     m_nStates = m_states.size();
@@ -48,6 +51,8 @@ PhyloTreeNode::~PhyloTreeNode()
 
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
     assert(!m_left or !m_right); // only two child nodes are allowed
+
+    child->setParent(this);
 
     if (m_nStates == 0) {
         m_nStates = child->noStates();

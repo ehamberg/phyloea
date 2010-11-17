@@ -15,8 +15,8 @@ using std::ostream;
 // super class for all phylo tree nodes
 class PhyloTreeNode {
 public:
-    PhyloTreeNode();
-    PhyloTreeNode(string name, string states);
+    PhyloTreeNode(PhyloTreeNode* parent);
+    PhyloTreeNode(PhyloTreeNode* parent, string name, string states);
     ~PhyloTreeNode();
     const string getName() const { return m_name; }
     unsigned int noStates() const { return m_nStates; }
@@ -34,6 +34,8 @@ public:
 
     string name() const { return m_name; }
 
+    void setParent(PhyloTreeNode* parent) { m_parent = parent; }
+
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
         return (out << n.m_name);
@@ -42,6 +44,9 @@ public:
 private:
     string m_name; // species/taxon name
     string m_states; // observed states for each site
+
+    // link to parent
+    PhyloTreeNode* m_parent;
 
     // child nodes together with a distance
     PhyloTreeNode* m_left;
