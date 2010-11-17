@@ -36,6 +36,12 @@ public:
 
     void setParent(PhyloTreeNode* parent) { m_parent = parent; }
 
+    // returns true if node has no parents
+    bool isRoot() const { return m_parent == NULL; }
+
+    // returns number of children
+    unsigned int numChildren() const;
+
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
         return (out << n.m_name);

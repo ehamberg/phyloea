@@ -185,6 +185,14 @@ string PhyloTreeNode::newick() const
 
     return string(s);
 }
+unsigned int PhyloTreeNode::numChildren() const
+{
+    unsigned int c = 0;
+    if (m_left != NULL) c++;
+    if (m_right != NULL) c++;
+
+    return c;
+}
 
 ostream& operator<<(ostream& out, const PhyloTree& t)
 {
