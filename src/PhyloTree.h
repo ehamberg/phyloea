@@ -34,6 +34,10 @@ public:
 
     string name() const { return m_name; }
 
+    // returns left/right child
+    PhyloTreeNode* left() const { return m_left; }
+    PhyloTreeNode* right() const { return m_right; }
+
     void setParent(PhyloTreeNode* parent) { m_parent = parent; }
 
     // returns true if node has no parents
