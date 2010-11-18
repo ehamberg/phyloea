@@ -1,4 +1,4 @@
-OBJS := $(subst src/main.o,, $(patsubst %.cpp,%.o,$(wildcard src/*.cpp)))
+OBJS := $(patsubst %.cpp,%.o,$(wildcard src/*.cpp))
 TESTOBJS := $(patsubst %.cpp,%.o,$(wildcard tests/*.cpp))
 
 CXX=g++
@@ -10,8 +10,14 @@ TARGET=./main
 TESTLIBS=-lgtest -lpthread
 TESTTARGET=tests/runtests
 
-all: src/main.o $(OBJS) $(TESTOBJS)
-	$(CXX) src/main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
+EVTARGET=evaluator
+
+all: main test
+
+main: main.o $(OBJS)
+	$(CXX) main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
+
+test: $(OBJS) $(TESTOBJS)
 	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
 	$(TESTTARGET) --gtest_shuffle 2> /dev/null
 
@@ -19,4 +25,4 @@ memcheck:
 	valgrind --tool=memcheck --leak-check=yes $(TARGET)
 
 clean:
-	rm -f */*.o
+	rm -f */*.o *.o
