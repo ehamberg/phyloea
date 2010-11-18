@@ -21,12 +21,12 @@ PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent)
 {
     m_parent = parent;
 
-    // generate a name for this node of the form “node #”
+    // generate a name for this node of the form “n#”
     ostringstream out;
     out << PhyloTreeNode::count++;
     out.str();
 
-    m_name = "node " + out.str();
+    m_name = 'n'+out.str();
     m_nStates = 0;
 
     m_left = m_right = NULL;
@@ -99,8 +99,8 @@ string PhyloTreeNode::prefixRepresentation(PhyloTreeNode* node)
 
     assert(node->numChildren() == 2);
     return node->getName()
-        + prefixRepresentation(node->left())
-        + prefixRepresentation(node->right());
+        + '\t' + prefixRepresentation(node->left())
+        + '\t' + prefixRepresentation(node->right());
 }
 
 

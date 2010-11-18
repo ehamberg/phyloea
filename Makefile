@@ -21,6 +21,9 @@ test: $(OBJS) $(TESTOBJS)
 	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
 	$(TESTTARGET) --gtest_shuffle 2> /dev/null
 
+evaluator: evaluator.o $(OBJS)
+	$(CXX) evaluator.o $(OBJS) $(CXXFLAGS) -o $(EVTARGET) $(LIBS)
+
 memcheck:
 	valgrind --tool=memcheck --leak-check=yes $(TARGET)
 
