@@ -89,6 +89,9 @@ public:
     // build a random tree from the given nodes
     void buildRandomTree(vector<PhyloTreeNode*> leaves);
 
+    // return root node
+    PhyloTreeNode* getRoot() const { return m_rootNode; }
+
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
 private:

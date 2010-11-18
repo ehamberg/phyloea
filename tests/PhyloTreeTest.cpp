@@ -70,3 +70,24 @@ TEST_F(PhyloTreeTest, TreeHeight) {
     ASSERT_EQ(2, tree1->height());
     ASSERT_EQ(3, tree2->height());
 }
+
+TEST_F(PhyloTreeTest, RandomTree) {
+    vector<PhyloTreeNode*> leaves;
+    unsigned int n = 30;
+
+    for (unsigned int i = 0; i < n; i++) {
+        leaves.push_back(new PhyloTreeNode(NULL));
+    }
+
+    PhyloTree t;
+    t.buildRandomTree(leaves);
+
+    ASSERT_LT(log2(n), t.height()); // |tree| must be ≥ log₂(n)
+    ASSERT_GE(n+1, t.height());     // |tree| must be ≤ n+1
+    ASSERT_TRUE(t.getRoot()->isRoot()); // there should be a parentless root node
+
+    // all leaves should now have a parent
+    for (unsigned int i = 0; i < n; i++) {
+        ASSERT_TRUE(!leaves.at(i)->isRoot());
+    }
+}
