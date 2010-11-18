@@ -26,7 +26,7 @@ PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent)
     out << PhyloTreeNode::count++;
     out.str();
 
-    m_name = "";//"node " + out.str();
+    m_name = "node " + out.str();
     m_nStates = 0;
 
     m_left = m_right = NULL;
@@ -66,6 +66,15 @@ void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
     } else if (!m_right) {
         m_right = child;
         m_rightDist = distance;
+    }
+}
+
+const string PhyloTreeNode::getName(bool printAnons) const
+{
+    if (!printAnons && numChildren() > 0) {
+        return string();
+    } else {
+        return m_name;
     }
 }
 
@@ -156,13 +165,13 @@ string PhyloTreeNode::links() const
     ostringstream out;
 
     if (m_left) {
-        out << "\t\"" << m_name << "\" -> \"" << m_left->getName()
+        out << "\t\"" << getName() << "\" -> \"" << m_left->getName()
             << "\" [label=\"" << m_leftDist << "\"];\n";
         out << m_left->links();
     }
 
     if (m_right) {
-        out << "\t\"" << m_name << "\" -> \"" << m_right->getName()
+        out << "\t\"" << getName() << "\" -> \"" << m_right->getName()
             << "\" [label=\"" << m_leftDist << "\"];\n";
         out << m_right->links();
     }
@@ -176,11 +185,11 @@ string PhyloTreeNode::newick() const
 
     if (!m_left or !m_right) {
         assert(!m_left and !m_right);
-        return m_name;
+        return getName(false);
     } else {
         std::sprintf(s, "(%s:%.1f,%s:%.1f)%s", m_left->newick().c_str(),
                 m_leftDist, m_right->newick().c_str(), m_rightDist,
-                m_name.c_str());
+                getName(false).c_str());
     }
 
     return string(s);
