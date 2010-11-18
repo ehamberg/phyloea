@@ -86,6 +86,9 @@ public:
     // returns string representation of tree in the newick format
     string newick() const;
 
+    // build a random tree from the given nodes
+    void buildRandomTree(vector<PhyloTreeNode*> leaves);
+
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
 private:

@@ -252,3 +252,45 @@ PhyloTree::~PhyloTree()
     delete m_evModel;
     delete m_rootNode;
 }
+
+void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
+{
+    unsigned int len = leaves.size();
+
+    // shuffle vector of leaves
+    random_shuffle(leaves.begin(), leaves.end());
+
+    // make a set of n-2 internal nodes + 1 root node ...
+    vector<PhyloTreeNode*> internal;
+    for (unsigned int i = 0; i < len-1; i++) {
+        internal.push_back(new PhyloTreeNode(NULL));
+    }
+
+    // the first node is our root
+    m_rootNode = internal.front();
+
+    // for each internal node (including the root) assign one or two internal
+    // node as its child[ren]
+    vector<PhyloTreeNode*>::iterator it;
+    for (it = internal.begin(); it != internal.end()-1; ++it) {
+        if ((*(it+1))->isRoot()) {
+            (*it)->addChild(*(it+1), 1.0);
+        }
+
+        // add one more with a probability of 0.5
+        if (rand()%2==0 && it != internal.end()-2 && (*(it+2))->isRoot()) {
+            (*it)->addChild(*(it+2), 1.0);
+        }
+    }
+
+    // last, add the leaf nodes
+    vector<PhyloTreeNode*>::iterator lt = leaves.begin();
+    for (it = internal.begin(); it != internal.end(); ++it) {
+        while ((*it)->numChildren() < 2) {
+            (*it)->addChild(*(lt++), 1.0);
+        }
+    }
+
+    // all leaves should now have a parent
+    assert(lt == leaves.end());
+}
