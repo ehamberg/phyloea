@@ -91,6 +91,19 @@ int PhyloTreeNode::height() const
     return 1+MAX(m_left->height(), m_right->height());
 }
 
+string PhyloTreeNode::prefixRepresentation(PhyloTreeNode* node)
+{
+    if (node->numChildren() == 0) {
+        return node->getName();
+    }
+
+    assert(node->numChildren() == 2);
+    return node->getName()
+        + prefixRepresentation(node->left())
+        + prefixRepresentation(node->right());
+}
+
+
 int PhyloTree::height() const
 {
     return m_rootNode->height();

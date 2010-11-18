@@ -46,6 +46,8 @@ public:
     // returns number of children
     unsigned int numChildren() const;
 
+    static string prefixRepresentation(PhyloTreeNode* node);
+
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
         return (out << n.m_name);
