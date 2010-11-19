@@ -79,7 +79,7 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, bool removeGaps)
 
 
     for (unsigned int i = 0; i < data.size(); i++) {
-        nodes.push_back(new PhyloTreeNode(NULL, descriptions[i], data[i]));
+        nodes.push_back(new PhyloTreeNode(descriptions[i], data[i]));
     }
 
     return nodes;

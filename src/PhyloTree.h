@@ -15,8 +15,8 @@ using std::ostream;
 // super class for all phylo tree nodes
 class PhyloTreeNode {
 public:
-    PhyloTreeNode(PhyloTreeNode* parent);
-    PhyloTreeNode(PhyloTreeNode* parent, string name, string states);
+    PhyloTreeNode();
+    PhyloTreeNode(string name, string states);
     ~PhyloTreeNode();
     const string getName(bool printAnons = true) const;
     unsigned int noStates() const { return m_nStates; }

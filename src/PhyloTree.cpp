@@ -17,9 +17,9 @@ using std::cout;
 
 int PhyloTreeNode::count = 0;
 
-PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent)
+PhyloTreeNode::PhyloTreeNode()
 {
-    m_parent = parent;
+    m_parent = NULL;
 
     // generate a name for this node of the form “n#”
     ostringstream out;
@@ -32,9 +32,9 @@ PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent)
     m_left = m_right = NULL;
 }
 
-PhyloTreeNode::PhyloTreeNode(PhyloTreeNode* parent, string name, string states)
+PhyloTreeNode::PhyloTreeNode(string name, string states)
 {
-    m_parent = parent;
+    m_parent = NULL;
     m_name = name;
     m_states = states;
     m_nStates = m_states.size();
@@ -276,7 +276,7 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
     // make a set of n-2 internal nodes + 1 root node ...
     vector<PhyloTreeNode*> internal;
     for (unsigned int i = 0; i < len-1; i++) {
-        internal.push_back(new PhyloTreeNode(NULL));
+        internal.push_back(new PhyloTreeNode());
     }
 
     // the first node is our root

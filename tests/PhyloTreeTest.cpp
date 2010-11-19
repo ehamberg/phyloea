@@ -9,40 +9,40 @@
 class PhyloTreeTest : public ::testing::Test {
 protected:
     PhyloTreeTest() {
-        PhyloTreeNode* n1 = new PhyloTreeNode(NULL, "s1", "A");
+        PhyloTreeNode* n1 = new PhyloTreeNode("s1", "A");
 
-        PhyloTreeNode* n2 = new PhyloTreeNode(NULL, "s2", "C");
+        PhyloTreeNode* n2 = new PhyloTreeNode("s2", "C");
 
-        PhyloTreeNode* n3 = new PhyloTreeNode(NULL, "s3", "C");
+        PhyloTreeNode* n3 = new PhyloTreeNode("s3", "C");
 
-        PhyloTreeNode* n4 = new PhyloTreeNode(NULL, "s4", "C");
+        PhyloTreeNode* n4 = new PhyloTreeNode("s4", "C");
 
-        PhyloTreeNode* n5 = new PhyloTreeNode(NULL, "s5", "G");
+        PhyloTreeNode* n5 = new PhyloTreeNode("s5", "G");
 
-        PhyloTreeNode* y = new PhyloTreeNode(NULL);
+        PhyloTreeNode* y = new PhyloTreeNode();
         y->addChild(n1, 0.5);
         y->addChild(n2, 0.5);
 
-        PhyloTreeNode* w = new PhyloTreeNode(NULL);
+        PhyloTreeNode* w = new PhyloTreeNode();
         w->addChild(n4, 0.5);
         w->addChild(n5, 0.5);
 
-        PhyloTreeNode* z = new PhyloTreeNode(NULL);
+        PhyloTreeNode* z = new PhyloTreeNode();
         z->addChild(n3, 0.5);
         z->addChild(w, 0.5);
 
-        PhyloTreeNode* x = new PhyloTreeNode(NULL);
+        PhyloTreeNode* x = new PhyloTreeNode();
         x->addChild(y, 0.5);
         x->addChild(z, 0.5);
 
         Kimura *k = new Kimura(10);
         t = new PhyloTree(x, k);
 
-        tree1 = new PhyloTreeNode(NULL);
-        tree2 = new PhyloTreeNode(NULL);
+        tree1 = new PhyloTreeNode();
+        tree2 = new PhyloTreeNode();
 
-        tree1->addChild(new PhyloTreeNode(tree1), 1.0);
-        tree1->addChild(new PhyloTreeNode(tree1), 1.0);
+        tree1->addChild(new PhyloTreeNode(), 1.0);
+        tree1->addChild(new PhyloTreeNode(), 1.0);
 
         tree2->addChild(tree1, 1.0);
     }
@@ -76,7 +76,7 @@ TEST_F(PhyloTreeTest, RandomTree) {
     unsigned int n = 30;
 
     for (unsigned int i = 0; i < n; i++) {
-        leaves.push_back(new PhyloTreeNode(NULL));
+        leaves.push_back(new PhyloTreeNode());
     }
 
     PhyloTree t;
