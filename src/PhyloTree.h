@@ -9,7 +9,6 @@
 
 using std::string;
 using std::vector;
-using std::pair;
 using std::ostream;
 
 // super class for all phylo tree nodes

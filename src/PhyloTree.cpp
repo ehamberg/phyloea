@@ -8,7 +8,6 @@
 #include <algorithm>
 
 using std::vector;
-using std::pair;
 using std::string;
 using std::ostringstream;
 using std::cout;
