@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <stack>
 
 #include "EAOperators.h"
 #include "AMaxOperators.h"
@@ -15,6 +16,7 @@ using std::cerr;
 using std::cin;
 using std::string;
 using std::vector;
+using std::stack;
 
 vector<PhyloTreeNode*> nodes;
 PhyloTree t;
@@ -29,7 +31,6 @@ int main(int argc, const char *argv[])
     }
 
     nodes = Fasta::readFastaFile(argv[1], true);
-    t.buildRandomTree(nodes);
 
     string s;
     while (getline(cin, s)) {
@@ -40,41 +41,59 @@ int main(int argc, const char *argv[])
     return 0;
 }
 
-vector<string> tokenize_str(const string & str)
-{
-    char delims='\t';
-    // Skip delims at beginning, find start of first token
-    string::size_type lastPos = str.find_first_not_of(delims, 0);
-    // Find next delimiter @ end of token
-    string::size_type pos     = str.find_first_of(delims, lastPos);
-
-    // output vector
-    vector<string> tokens;
-
-    while (string::npos != pos || string::npos != lastPos)
-    {
-        // Found a token, add it to the vector.
-        tokens.push_back(str.substr(lastPos, pos - lastPos));
-        // Skip delims.  Note the "not_of". this is beginning of token
-        lastPos = str.find_first_not_of(delims, pos);
-        // Find next delimiter at end of token.
-        pos     = str.find_first_of(delims, lastPos);
-    }
-
-    return tokens;
-}
-
 PhyloTree decodePrefixNotation(string s)
 {
-    //vector<string> tokens = tokenize_str(s);
-
     std::istringstream inpStream(s);
+    std::istringstream ss;
 
     string t;
-    int i;
+    unsigned int n;
+
+    // root node
+    PhyloTreeNode* root = new PhyloTreeNode();
+    stack<PhyloTreeNode*> nodeStack;
+    nodeStack.push(root);
+
+    // the first node should be an HTU (the root)
+    assert(inpStream >> t && t == "h");
+
     while (inpStream >> t) {
-        cout << t << '\n';
+
+        // HTU nodes are called “h#”
+        if (t == "h") {
+            cerr << "HTU\n";
+
+            PhyloTreeNode* temp = new PhyloTreeNode();
+            nodeStack.top()->addChild(temp, 1.0);
+            nodeStack.push(temp);
+        } else {
+            ss.clear();
+            ss.str(t);
+            ss >> n;
+
+            // if not starting with ‘h’ the token should always be a number
+            assert(!ss.fail());
+
+            cerr << "OTU #" << n << '\n';
+
+            assert(n >= 0 && n < nodes.size());
+
+            nodeStack.top()->addChild(nodes[n], 1.0);
+        }
+
+        while (nodeStack.size() > 0 && nodeStack.top()->numChildren() == 2) {
+            cerr << "POP" << nodeStack.size() << "\n";
+            nodeStack.pop();
+        }
     }
 
-    return PhyloTree();
+    assert(nodeStack.size() == 0);
+
+    PhyloTree tree(root, NULL);
+    cout << tree.dot();
+
+    //PhyloTree tree(root, NULL);
+    //cout << tree.dot();
+
+    return tree;
 }

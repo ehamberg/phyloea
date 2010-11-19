@@ -21,7 +21,8 @@ PhyloTreeNode::PhyloTreeNode()
 {
     m_parent = NULL;
 
-    // generate a name for this node of the form “n#”
+    // not given a name, so this is an HTU. generate a name for this node of
+    // the form “h#”
     ostringstream out;
     out << PhyloTreeNode::count++;
     out.str();
