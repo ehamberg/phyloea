@@ -38,6 +38,12 @@ int main(int argc, const char *argv[])
         cout << "1.0\n";
     }
 
+    // clean-up
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+        delete nodes[i];
+    }
+    nodes.clear();
+
     return 0;
 }
 
@@ -78,7 +84,8 @@ PhyloTree decodePrefixNotation(string s)
 
             assert(n >= 0 && n < nodes.size());
 
-            nodeStack.top()->addChild(nodes[n], 1.0);
+            PhyloTreeNode* temp = new PhyloTreeNode(nodes[n]->getName(), nodes[n]->getStates());
+            nodeStack.top()->addChild(temp, 1.0);
         }
 
         while (nodeStack.size() > 0 && nodeStack.top()->numChildren() == 2) {
