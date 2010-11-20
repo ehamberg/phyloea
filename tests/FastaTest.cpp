@@ -17,12 +17,12 @@ protected:
 
 // test a simple tree for which the likelihood is known
 TEST_F(FastaTest, ReadFile) {
-    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta", false);
+    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta");
 
     ASSERT_EQ(7, nodes.size());
 
     for (unsigned int i = 0; i < nodes.size(); i++) {
-        ASSERT_EQ(18160, nodes[i]->noStates());
+        ASSERT_EQ(15124, nodes[i]->noStates());
     }
 
     vector<PhyloTreeNode*>::iterator it;
@@ -30,20 +30,6 @@ TEST_F(FastaTest, ReadFile) {
         delete *it;
     }
 }
-
-TEST_F(FastaTest, ReadFileRemoveGaps) {
-    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta", true);
-
-    for (unsigned int i = 0; i < nodes.size(); i++) {
-        ASSERT_EQ(15249, nodes[i]->noStates());
-    }
-
-    vector<PhyloTreeNode*>::iterator it;
-    for (it = nodes.begin(); it != nodes.end(); it++) {
-        delete *it;
-    }
-}
-
 
 TEST_F(FastaTest, ReadInvalidFileDeathTest) {
     ASSERT_DEATH(Fasta::readFastaFile("tests/invalid.fasta"), "n>=0");

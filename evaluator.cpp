@@ -30,7 +30,7 @@ int main(int argc, const char *argv[])
         return 1;
     }
 
-    nodes = Fasta::readFastaFile(argv[1], true);
+    nodes = Fasta::readFastaFile(argv[1]);
 
     string s;
     while (getline(cin, s)) {

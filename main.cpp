@@ -16,7 +16,7 @@ int main(int argc, const char *argv[])
 {
     srand(time(NULL));
 
-    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta", true);
+    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta");
     PhyloTree t;
     t.buildRandomTree(nodes);
     cout << t.dot() << '\n';
