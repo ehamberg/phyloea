@@ -209,7 +209,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
                 xs += p1*l1;
                 ys += p2*l2;
             }
-            l.push_back(xs*ys);
+            l.push_back(eModel->prior(nucleotides[s])*xs*ys);
         }
 
         m_likelihoods.push_back(l);

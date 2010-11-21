@@ -54,3 +54,8 @@ double JukesCantor::P(char a, char b, double t) const
         return 0.75*(1-exp(-0.75*u*t));
     }
 }
+
+double JukesCantor::prior(char s) const
+{
+    return 0.25;
+}
