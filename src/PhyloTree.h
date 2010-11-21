@@ -49,6 +49,8 @@ public:
 
     static string prefixRepresentation(PhyloTreeNode* node);
 
+    const string getStates() const { return m_states; }
+
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
         return (out << n.m_name);
