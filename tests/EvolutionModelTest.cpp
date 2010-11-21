@@ -48,3 +48,19 @@ TEST_F(EvolutionModelTest, P_less_than_one) {
         ASSERT_LE(kimura.P(nucleotides[n1], nucleotides[n2], t), 1.0);
     }
 }
+
+TEST_F(EvolutionModelTest, Reversible) {
+    // kimure should be reversible, i.e. P(s, x|t) = P(x, s|t)
+    Kimura kimura((rand()%100)/10.0);
+
+    for (int i = 0; i < 1000; i++) {
+        double t = rand()/(double)RAND_MAX;
+        int n1 = rand()%4;
+        int n2 = rand()%4;
+
+        double p_ij = kimura.P(nucleotides[n1], nucleotides[n2], t);
+        double p_ji = kimura.P(nucleotides[n2], nucleotides[n1], t);
+
+        ASSERT_FLOAT_EQ(p_ij, p_ji);
+    }
+}

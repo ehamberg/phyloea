@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 #include "PhyloTree.h"
 #include "EvolutionModel.h"
@@ -89,5 +90,35 @@ TEST_F(PhyloTreeTest, RandomTree) {
     // all leaves should now have a parent
     for (unsigned int i = 0; i < n; i++) {
         ASSERT_TRUE(!leaves.at(i)->isRoot());
+    }
+}
+
+TEST_F(PhyloTreeTest, PulleyPrinciple) {
+    double t1 = rand()/(double)RAND_MAX;
+    double t2 = rand()/(double)RAND_MAX;
+    PhyloTreeNode* r1 = new PhyloTreeNode();
+    PhyloTreeNode* h1 = new PhyloTreeNode();
+
+    h1->addChild(new PhyloTreeNode("s1", "ACGT"), rand()/(double)RAND_MAX);
+    h1->addChild(new PhyloTreeNode("s2", "GCCA"), rand()/(double)RAND_MAX);
+
+    r1->addChild(new PhyloTreeNode("s3", "GGGA"), t1);
+    r1->addChild(h1, t2);
+
+    PhyloTree tr1(r1, new Kimura(10.0));
+
+    double lh1 = tr1.logLikelihood();
+
+    std::cerr << tr1.dot();
+
+    for (unsigned int i = 0; i < 1000; i++) {
+        double t_rand = rand()/(double)RAND_MAX;
+        r1->setLeftDist(t_rand);
+        r1->setRightDist((t1+t2)-t_rand);
+        ASSERT_FLOAT_EQ(tr1.logLikelihood(), lh1);
+
+        if (i == 100) {
+            std::cerr << tr1.dot();
+        }
     }
 }
