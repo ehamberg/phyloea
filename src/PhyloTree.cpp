@@ -50,13 +50,23 @@ PhyloTreeNode::~PhyloTreeNode()
     delete m_right;
 }
 
+void PhyloTreeNode::setNumStates(unsigned int n)
+{
+    m_nStates = n;
+
+    // propagate
+    if (m_parent != NULL) {
+        m_parent->setNumStates(n);
+    }
+}
+
 void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
     assert(!m_left or !m_right); // only two child nodes are allowed
 
     child->setParent(this);
 
     if (m_nStates == 0) {
-        m_nStates = child->noStates();
+        setNumStates(child->noStates());
     } else {
         assert(m_nStates == child->noStates());
     }

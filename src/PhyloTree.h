@@ -51,6 +51,8 @@ public:
 
     const string getStates() const { return m_states; }
 
+    void setNumStates(unsigned int n);
+
     friend ostream& operator<<(ostream& out, const PhyloTreeNode& n)
     {
         return (out << n.m_name);
