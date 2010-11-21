@@ -310,7 +310,9 @@ double PhyloTree::logLikelihood()
 PhyloTree::~PhyloTree()
 {
     delete m_evModel;
+    m_evModel = NULL;
     delete m_rootNode;
+    m_rootNode = NULL;
 }
 
 void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
