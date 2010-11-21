@@ -4,12 +4,14 @@
 #include <string>
 #include <vector>
 #include <ostream>
+#include <map>
 
 #include "EvolutionModel.h"
 
 using std::string;
 using std::vector;
 using std::ostream;
+using std::map;
 
 // super class for all phylo tree nodes
 class PhyloTreeNode {
@@ -69,6 +71,17 @@ private:
 
     vector<vector<double> > m_likelihoods;
     unsigned int m_nStates;
+
+    // cache P and L values
+    map<char, double> plCache;
+    map<char, double> prCache;
+    vector<vector<double> > llCache;
+    vector<vector<double> > lrCache;
+
+    // record the branch lengths the cache is for so the cache can be
+    // invalidated on changes
+    double cachedForL;
+    double cachedForR;
 };
 
 

@@ -10,7 +10,8 @@
 using std::vector;
 using std::string;
 using std::ostringstream;
-using std::cout;
+using std::cerr;
+using std::map;
 
 #define MAX(x,y) (x>y?x:y)
 
@@ -148,18 +149,63 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
         return m_likelihoods;
     }
 
+    // check if the cached values are for a different branch length, if so,
+    // invalidate the caches
+    if (cachedForL != m_leftDist) {
+        plCache.clear();
+        llCache.clear();
+    }
+    if (cachedForR != m_rightDist) {
+        prCache.clear();
+        lrCache.clear();
+    }
+
+    map<char, double>::iterator it;
+
     double xs, ys;
     char nucleotides[4] = {'A', 'C', 'G', 'T' };
 
+    cerr << "computing for " << noStates() << " states...\n";
     for (unsigned int i = 0; i < noStates(); i++) {
         vector<double> l;
+
+        if (i%1000==0) {
+            cerr << '\t' << i << '\n';
+        }
         for (int s = 0; s < 4; s++) {
             xs = ys = 0.0;
             for (int x = 0; x < 4; x++) {
-                double p1 = eModel->P(nucleotides[s], nucleotides[x], m_leftDist);
-                double p2 = eModel->P(nucleotides[s], nucleotides[x], m_rightDist);
-                double l1 = m_left->likelihood(eModel)[i][x];
-                double l2 = m_right->likelihood(eModel)[i][x];
+                // p1
+                double p1;
+                it = plCache.find(nucleotides[s]^nucleotides[x]);
+                if (it != plCache.end()) {
+                    p1 = plCache[nucleotides[s]^nucleotides[x]];
+                } else {
+                    // not in cache
+                    p1 = eModel->P(nucleotides[s], nucleotides[x], m_leftDist);
+                    plCache[nucleotides[s]^nucleotides[x]] = p1;
+                }
+
+                // p2
+                double p2;
+                it = prCache.find(nucleotides[s]^nucleotides[x]);
+                if (it != prCache.end()) {
+                    p2 = prCache[nucleotides[s]^nucleotides[x]];
+                } else {
+                    // not in cache
+                    p2 = eModel->P(nucleotides[s], nucleotides[x], m_rightDist);
+                    prCache[nucleotides[s]^nucleotides[x]] = p2;
+                }
+
+                if (llCache.empty()) {
+                    assert(lrCache.empty());
+                    cachedForL = m_leftDist;
+                    cachedForR = m_rightDist;
+                    llCache = m_left->likelihood(eModel);
+                    lrCache = m_right->likelihood(eModel);
+                }
+                double l1 = llCache[i][x];
+                double l2 = lrCache[i][x];
                 xs += p1*l1;
                 ys += p2*l2;
             }
@@ -168,6 +214,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 
         m_likelihoods.push_back(l);
     }
+    cerr << "... done\n";
 
     return m_likelihoods;
 }
@@ -287,12 +334,12 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
     vector<PhyloTreeNode*>::iterator it;
     for (it = internal.begin(); it != internal.end()-1; ++it) {
         if ((*(it+1))->isRoot()) {
-            (*it)->addChild(*(it+1), 1.0);
+            (*it)->addChild(*(it+1), rand()/(double)RAND_MAX);
         }
 
         // add one more with a probability of 0.5
         if (rand()%2==0 && it != internal.end()-2 && (*(it+2))->isRoot()) {
-            (*it)->addChild(*(it+2), 1.0);
+            (*it)->addChild(*(it+2), rand()/(double)RAND_MAX);
         }
     }
 
@@ -300,7 +347,7 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
     vector<PhyloTreeNode*>::iterator lt = leaves.begin();
     for (it = internal.begin(); it != internal.end(); ++it) {
         while ((*it)->numChildren() < 2) {
-            (*it)->addChild(*(lt++), 1.0);
+            (*it)->addChild(*(lt++), rand()/(double)RAND_MAX);
         }
     }
 
