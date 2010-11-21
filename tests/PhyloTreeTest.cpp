@@ -59,7 +59,7 @@ protected:
 
 // test a simple tree for which the likelihood is known
 TEST_F(PhyloTreeTest, SimpleTreeLikelihood) {
-    ASSERT_FLOAT_EQ(0.0000294480138762, pow(10.0, t->logLikelihood()));
+    ASSERT_FLOAT_EQ(0.00000011503131, pow(10.0, t->logLikelihood()));
 }
 
 TEST_F(PhyloTreeTest, NewickExportTest) {

@@ -37,6 +37,12 @@ double Kimura::P(char a, char b, double t) const
     }
 }
 
+double Kimura::prior(char s) const
+{
+    // K80 assumes equal base frequencies: π_{A,C,G,T} = ¼
+    return 0.25;
+}
+
 double JukesCantor::P(char a, char b, double t) const
 {
     assert(isPuri(a) || isPyri(a));
