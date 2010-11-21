@@ -19,7 +19,7 @@ public:
     PhyloTreeNode();
     PhyloTreeNode(string name, string states);
     ~PhyloTreeNode();
-    const string getName(bool printAnons = true) const;
+    const string getName(bool printHTUs = true) const;
     unsigned int noStates() const { return m_nStates; }
     int height() const;
     void addChild(PhyloTreeNode*, double);

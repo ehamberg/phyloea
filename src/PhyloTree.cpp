@@ -70,9 +70,9 @@ void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
     }
 }
 
-const string PhyloTreeNode::getName(bool printAnons) const
+const string PhyloTreeNode::getName(bool printHTUs) const
 {
-    if (!printAnons && numChildren() > 0) {
+    if (!printHTUs && numChildren() > 0) {
         return string();
     } else {
         return m_name;
