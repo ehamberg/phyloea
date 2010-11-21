@@ -2,7 +2,7 @@ OBJS := $(patsubst %.cpp,%.o,$(wildcard src/*.cpp))
 TESTOBJS := $(patsubst %.cpp,%.o,$(wildcard tests/*.cpp))
 
 CXX=g++
-CXXFLAGS=-Wall -pedantic -Isrc -g
+CXXFLAGS=-Wall -pedantic -Isrc -O2
 
 LIBS=
 TARGET=./main
@@ -12,7 +12,7 @@ TESTTARGET=tests/runtests
 
 EVTARGET=evaluator
 
-all: main test
+all: main evaluator test
 
 main: main.o $(OBJS)
 	$(CXX) main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
@@ -28,4 +28,4 @@ memcheck:
 	valgrind --tool=memcheck --leak-check=yes $(TARGET)
 
 clean:
-	rm -f */*.o *.o
+	rm -f */*.o *.o core
