@@ -54,7 +54,10 @@ public:
         return (out << n.m_name);
     }
 
-private:
+    void setLeftDist(double t) { m_leftDist = t; }
+    void setRightDist(double t) { m_rightDist = t; }
+
+protected:
     string m_name; // species/taxon name
     string m_states; // observed states for each site
 
