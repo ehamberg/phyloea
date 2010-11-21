@@ -36,3 +36,15 @@ double Kimura::P(char a, char b, double t) const
         return 0.25+exp(-(2.0*t)/(R+1))/4.0+exp(((-2.0*R-1)*t)/(R+1))/2.0;
     }
 }
+
+double JukesCantor::P(char a, char b, double t) const
+{
+    assert(isPuri(a) || isPyri(a));
+    assert(isPuri(b) || isPyri(b));
+
+    if (a == b) {
+        return 0.25*(1-exp(-0.75*u*t));
+    } else {
+        return 0.75*(1-exp(-0.75*u*t));
+    }
+}

@@ -15,4 +15,13 @@ private:
     double R;
 };
 
+class JukesCantor : public EvolutionModel {
+public:
+    JukesCantor(double u) { this->u = u; }
+    virtual double P(char a, char b, double t) const;
+    void setU(double u) { this->u = u; }
+private:
+    double u;
+};
+
 #endif
