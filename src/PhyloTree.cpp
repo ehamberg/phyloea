@@ -242,7 +242,7 @@ string PhyloTreeNode::links() const
 
     if (m_right) {
         out << "\t\"" << getName() << "\" -> \"" << m_right->getName()
-            << "\" [label=\"" << m_leftDist << "\"];\n";
+            << "\" [label=\"" << m_rightDist << "\"];\n";
         out << m_right->links();
     }
 
