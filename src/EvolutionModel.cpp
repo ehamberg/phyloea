@@ -8,21 +8,21 @@ using std::exp;
 // helper function: returns true if given base is a purine
 bool isPuri(char b)
 {
-    assert(b == 'A' || b == 'C' || b == 'G' || b == 'T');
-    return (b == 'A' || b == 'G');
+    assert(b == 'A' or b == 'C' or b == 'G' or b == 'T');
+    return (b == 'A' or b == 'G');
 }
 
 // helper function: returns true if given base is a pyrimidine
 bool isPyri(char b)
 {
-    assert(b == 'A' || b == 'C' || b == 'G' || b == 'T');
-    return (b == 'C' || b == 'T');
+    assert(b == 'A' or b == 'C' or b == 'G' or b == 'T');
+    return (b == 'C' or b == 'T');
 }
 
 double Kimura::P(char a, char b, double t) const
 {
-    assert(isPuri(a) || isPyri(a));
-    assert(isPuri(b) || isPyri(b));
+    assert(isPuri(a) or isPyri(a));
+    assert(isPuri(b) or isPyri(b));
 
     if (((isPuri(a) and isPuri(b)) or (isPyri(a) and isPyri(b))) and a != b) {
         // transition
@@ -45,8 +45,8 @@ double Kimura::prior(char s) const
 
 double JukesCantor::P(char a, char b, double t) const
 {
-    assert(isPuri(a) || isPyri(a));
-    assert(isPuri(b) || isPyri(b));
+    assert(isPuri(a) or isPyri(a));
+    assert(isPuri(b) or isPyri(b));
 
     if (a == b) {
         return 0.25*(1-exp(-0.75*u*t));

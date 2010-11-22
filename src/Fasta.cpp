@@ -26,7 +26,7 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
     int n = -1;
     string line;
 
-    while (fastaFile >> line && !fastaFile.eof()) {
+    while (fastaFile >> line and !fastaFile.eof()) {
       if (line[0] == '>' or line[0] == ';') {
           if (!readingComment) {
               readingComment = true;

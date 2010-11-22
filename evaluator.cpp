@@ -61,7 +61,7 @@ PhyloTree decodePrefixNotation(string s)
     nodeStack.push(root);
 
     // the first node should be an HTU (the root)
-    assert(inpStream >> t && t == "h");
+    assert(inpStream >> t and t == "h");
 
     while (inpStream >> t) {
 
@@ -82,13 +82,13 @@ PhyloTree decodePrefixNotation(string s)
 
             cerr << "OTU #" << n << '\n';
 
-            assert(n >= 0 && n < nodes.size());
+            assert(n >= 0 and n < nodes.size());
 
             PhyloTreeNode* temp = new PhyloTreeNode(nodes[n]->getName(), nodes[n]->getStates());
             nodeStack.top()->addChild(temp, 1.0);
         }
 
-        while (nodeStack.size() > 0 && nodeStack.top()->numChildren() == 2) {
+        while (nodeStack.size() > 0 and nodeStack.top()->numChildren() == 2) {
             cerr << "POP" << nodeStack.size() << "\n";
             nodeStack.pop();
         }

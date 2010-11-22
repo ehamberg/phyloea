@@ -82,7 +82,7 @@ void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
 
 const string PhyloTreeNode::getName(bool printHTUs) const
 {
-    if (!printHTUs && numChildren() > 0) {
+    if (!printHTUs and numChildren() > 0) {
         return string();
     } else {
         return m_name;
@@ -179,7 +179,7 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     for (unsigned int i = 0; i < noStates(); i++) {
         vector<double> l;
 
-        if (i%1000==0) {
+        if (i != 0 and i%1000==0) {
             cerr << '\t' << i << '\n';
         }
         for (int s = 0; s < 4; s++) {
@@ -350,7 +350,7 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
         }
 
         // add one more with a probability of 0.5
-        if (rand()%2==0 && it != internal.end()-2 && (*(it+2))->isRoot()) {
+        if (rand()%2==0 and it != internal.end()-2 and (*(it+2))->isRoot()) {
             (*it)->addChild(*(it+2), rand()/(double)RAND_MAX);
         }
     }
