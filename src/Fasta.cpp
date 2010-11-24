@@ -2,10 +2,12 @@
 #include <cassert>
 #include <iostream>
 #include <set>
+#include <sstream>
 
 #include "Fasta.h"
 
 using std::ifstream;
+using std::stringstream;
 using std::ios;
 using std::cerr;
 using std::set;
@@ -49,12 +51,10 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
 
     cerr << "Read " << data.size() << " sequences:\n";
     for (unsigned int i = 0; i < data.size(); i++) {
-        cerr << '\t' << descriptions[i] << " (length: " << data[i].length() << '\n';
-    }
-
-
-    for (unsigned int i = 0; i < data.size(); i++) {
-        nodes.push_back(new PhyloTreeNode(descriptions[i], data[i]));
+        stringstream ss;
+        ss << i;
+        cerr << "\t[" << i << "]" << ss.str() << " (length: " << data[i].length() << '\n';
+        nodes.push_back(new PhyloTreeNode(ss.str(), data[i]));
     }
 
     return nodes;
