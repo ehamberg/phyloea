@@ -73,6 +73,10 @@ TEST_F(PhyloTreeTest, TreeHeight) {
     ASSERT_EQ(3, tree2->height());
 }
 
+TEST_F(PhyloTreeTest, NumStates) {
+    ASSERT_EQ(1, t->getRoot()->noStates());
+}
+
 TEST_F(PhyloTreeTest, RandomTree) {
     vector<PhyloTreeNode*> leaves;
     unsigned int n = 30;
