@@ -113,18 +113,13 @@ TEST_F(PhyloTreeTest, PulleyPrinciple) {
     PhyloTree tr1(r1, new Kimura(10.0));
 
     double lh1 = tr1.logLikelihood();
-
-    std::cerr << tr1.dot();
+    ASSERT_LT(tr1.logLikelihood(), 0.0);
 
     for (unsigned int i = 0; i < 1000; i++) {
         double t_rand = rand()/(double)RAND_MAX;
         r1->setLeftDist(t_rand);
-        r1->setRightDist((t1+t2)-t_rand);
+        r1->setLeftDist((t1+t2)-t_rand);
         ASSERT_FLOAT_EQ(tr1.logLikelihood(), lh1);
-
-        if (i == 100) {
-            std::cerr << tr1.dot();
-        }
     }
 }
 
