@@ -6,6 +6,7 @@
 
 #include "PhyloTree.h"
 #include "EvolutionModel.h"
+#include "Fasta.h"
 
 class PhyloTreeTest : public ::testing::Test {
 protected:
@@ -122,3 +123,23 @@ TEST_F(PhyloTreeTest, PulleyPrinciple) {
         }
     }
 }
+
+TEST_F(PhyloTreeTest, PrefixCoding) {
+    vector<PhyloTreeNode*> nodes1 = Fasta::readFastaFile("tests/aligned.fasta");
+    PhyloTree t;
+    t.setEvolutionModel(new Kimura(10.0));
+    t.buildRandomTree(nodes1);
+
+    double lh1 = t.logLikelihood();
+    ASSERT_LT(lh1, 0.0);
+
+    string prefixCoded = PhyloTreeNode::prefixRepresentation(t.getRoot());
+
+    vector<PhyloTreeNode*> nodes2 = Fasta::readFastaFile("tests/aligned.fasta");
+    PhyloTree t2 = PhyloTree::decodePrefixNotation(nodes2, prefixCoded, new Kimura(10.0));
+
+    double lh2 = t.logLikelihood();
+
+    ASSERT_DOUBLE_EQ(lh1, lh2);
+}
+
