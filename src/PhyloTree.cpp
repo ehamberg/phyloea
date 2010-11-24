@@ -50,7 +50,9 @@ PhyloTreeNode::~PhyloTreeNode()
 {
     // delete children
     delete m_left;
+    m_left = NULL;
     delete m_right;
+    m_right = NULL;
 }
 
 void PhyloTreeNode::setNumStates(unsigned int n)
