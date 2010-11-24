@@ -6,12 +6,15 @@
 #include <cmath>
 #include <cstdio>
 #include <algorithm>
+#include <stack>
 
 using std::vector;
 using std::string;
 using std::ostringstream;
+using std::stringstream;
 using std::cerr;
 using std::map;
+using std::stack;
 
 #define MAX(x,y) (x>y?x:y)
 
@@ -27,7 +30,7 @@ PhyloTreeNode::PhyloTreeNode()
     out << PhyloTreeNode::count++;
     out.str();
 
-    m_name = 'n'+out.str();
+    m_name = 'h'+out.str();
     m_nStates = 0;
 
     m_left = m_right = NULL;
@@ -85,7 +88,9 @@ const string PhyloTreeNode::getName(bool printHTUs) const
     if (!printHTUs and numChildren() > 0) {
         return string();
     } else {
-        return m_name;
+        stringstream iss;
+        iss << m_nStates;
+        return m_name;// + '[' + iss.str() + ']';
     }
 }
 
@@ -108,10 +113,20 @@ string PhyloTreeNode::prefixRepresentation(PhyloTreeNode* node)
         return node->getName();
     }
 
+    std::stringstream ss;
+    string left, right;
+    ss << node->getLeftDist();
+    ss >> left;
+    ss.clear();
+    ss << node->getRightDist();
+    ss >> right;
+
     assert(node->numChildren() == 2);
-    return node->getName()
-        + '\t' + prefixRepresentation(node->left())
-        + '\t' + prefixRepresentation(node->right());
+    string name = node->getName();
+    if (name.at(0) == 'h') name = "h";
+    return name
+        + '\t' + left + '\t' + prefixRepresentation(node->left())
+        + '\t' + right + '\t' + prefixRepresentation(node->right());
 }
 
 
@@ -158,6 +173,8 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 
         return m_likelihoods;
     }
+
+    assert(eModel != NULL);
 
     // check if the cached values are for a different branch length, if so,
     // invalidate the caches
@@ -365,4 +382,71 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
 
     // all leaves should now have a parent
     assert(lt == leaves.end());
+}
+
+PhyloTree PhyloTree::decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s, EvolutionModel* evModel)
+{
+    std::istringstream inpStream(s);
+    std::istringstream ss;
+
+    string t;
+    unsigned int n;
+
+    // root node
+    PhyloTreeNode* root = new PhyloTreeNode();
+    stack<PhyloTreeNode*> nodeStack;
+    nodeStack.push(root);
+
+    // the first node should be an HTU (the root)
+    assert(inpStream >> t and t == "h");
+
+    bool readingLength = false;
+    double branchLength = 0.0;
+
+    while (inpStream >> t) {
+        // every second token should be a branch length
+        readingLength = !readingLength;
+
+        // HTU nodes are called “h#”
+        if (t == "h") {
+            assert(!readingLength);
+
+            cerr << "HTU\n";
+
+            PhyloTreeNode* temp = new PhyloTreeNode();
+            nodeStack.top()->addChild(temp, branchLength);
+            nodeStack.push(temp);
+        } else {
+            ss.clear();
+            ss.str(t);
+
+            if (readingLength) {
+                ss >> branchLength;
+                continue;
+            } else {
+                ss >> n;
+            }
+
+            // if not starting with ‘h’ the token should always be a number
+            assert(!ss.fail());
+
+            cerr << "OTU #" << n << '\n';
+
+            assert(n >= 0 and n < nodes.size());
+
+            PhyloTreeNode* temp = new PhyloTreeNode(nodes[n]->getName(), nodes[n]->getStates());
+            nodeStack.top()->addChild(temp, branchLength);
+        }
+
+        while (nodeStack.size() > 0 and nodeStack.top()->numChildren() == 2) {
+            cerr << "POP" << nodeStack.size() << "\n";
+            nodeStack.pop();
+        }
+    }
+
+    assert(nodeStack.size() == 0);
+
+    PhyloTree tree(root, evModel);
+
+    return tree;
 }

@@ -60,6 +60,8 @@ public:
 
     void setLeftDist(double t) { m_leftDist = t; }
     void setRightDist(double t) { m_rightDist = t; }
+    double getLeftDist() const { return m_leftDist; }
+    double getRightDist() const { return m_rightDist; }
 
 protected:
     string m_name; // species/taxon name
@@ -114,10 +116,14 @@ public:
     // build a random tree from the given nodes
     void buildRandomTree(vector<PhyloTreeNode*> leaves);
 
+    void setEvolutionModel(EvolutionModel* m) { m_evModel = m; }
+
     // return root node
     PhyloTreeNode* getRoot() const { return m_rootNode; }
 
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
+
+    static PhyloTree decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s, EvolutionModel* evModel);
 
 private:
     PhyloTreeNode* m_rootNode;

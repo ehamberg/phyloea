@@ -21,8 +21,6 @@ using std::stack;
 vector<PhyloTreeNode*> nodes;
 PhyloTree t;
 
-PhyloTree decodePrefixNotation(string);
-
 int main(int argc, const char *argv[])
 {
     if (argc != 2) {
@@ -34,8 +32,7 @@ int main(int argc, const char *argv[])
 
     string s;
     while (getline(cin, s)) {
-        decodePrefixNotation(s);
-        cout << "1.0\n";
+        cout << PhyloTree::decodePrefixNotation(nodes, s, new Kimura(10.0)).logLikelihood() << '\n';
     }
 
     // clean-up
@@ -45,62 +42,4 @@ int main(int argc, const char *argv[])
     nodes.clear();
 
     return 0;
-}
-
-PhyloTree decodePrefixNotation(string s)
-{
-    std::istringstream inpStream(s);
-    std::istringstream ss;
-
-    string t;
-    unsigned int n;
-
-    // root node
-    PhyloTreeNode* root = new PhyloTreeNode();
-    stack<PhyloTreeNode*> nodeStack;
-    nodeStack.push(root);
-
-    // the first node should be an HTU (the root)
-    assert(inpStream >> t and t == "h");
-
-    while (inpStream >> t) {
-
-        // HTU nodes are called “h#”
-        if (t == "h") {
-            cerr << "HTU\n";
-
-            PhyloTreeNode* temp = new PhyloTreeNode();
-            nodeStack.top()->addChild(temp, 1.0);
-            nodeStack.push(temp);
-        } else {
-            ss.clear();
-            ss.str(t);
-            ss >> n;
-
-            // if not starting with ‘h’ the token should always be a number
-            assert(!ss.fail());
-
-            cerr << "OTU #" << n << '\n';
-
-            assert(n >= 0 and n < nodes.size());
-
-            PhyloTreeNode* temp = new PhyloTreeNode(nodes[n]->getName(), nodes[n]->getStates());
-            nodeStack.top()->addChild(temp, 1.0);
-        }
-
-        while (nodeStack.size() > 0 and nodeStack.top()->numChildren() == 2) {
-            cerr << "POP" << nodeStack.size() << "\n";
-            nodeStack.pop();
-        }
-    }
-
-    assert(nodeStack.size() == 0);
-
-    PhyloTree tree(root, NULL);
-    cout << tree.dot();
-
-    //PhyloTree tree(root, NULL);
-    //cout << tree.dot();
-
-    return tree;
 }
