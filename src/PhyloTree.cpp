@@ -72,7 +72,7 @@ void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
 
     if (m_nStates == 0) {
         setNumStates(child->noStates());
-    } else {
+    } else if (child->noStates() != 0) {
         assert(m_nStates == child->noStates());
     }
 
