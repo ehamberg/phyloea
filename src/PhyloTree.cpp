@@ -181,10 +181,14 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     // check if the cached values are for a different branch length, if so,
     // invalidate the caches
     if (cachedForL != m_leftDist) {
+        cerr << ">>> m_leftDist changed from " << cachedForL << " to " <<
+            m_leftDist << ". clearing cache\n";
         plCache.clear();
         llCache.clear();
     }
     if (cachedForR != m_rightDist) {
+        cerr << ">>> m_rightDist changed from " << cachedForR << " to " <<
+            m_rightDist << ". clearing cache\n";
         prCache.clear();
         lrCache.clear();
     }
