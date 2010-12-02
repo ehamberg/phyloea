@@ -4,42 +4,51 @@
 #include "EASystem.h"
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <cmath>
+#include <string>
 
 #include "EAOperators.h"
-#include "AMaxOperators.h"
+#include "TreeOperators.h"
 
 using std::cout;
 using std::cerr;
+using std::string;
+using std::vector;
 
 int main(int argc, const char *argv[])
 {
-    srand(time(NULL));
+    unsigned int seed = time(NULL);
+    cerr << "random seed: " << seed << '\n';
+    srand(seed);
+    //Kimura* k = new Kimura(10.0);
 
-    vector<PhyloTreeNode*> nodes = Fasta::readFastaFile("tests/aligned.fasta");
-    PhyloTree t;
-    t.buildRandomTree(nodes);
-    cout << t.dot() << '\n';
-    cerr << PhyloTreeNode::prefixRepresentation(t.getRoot()) << '\n';
+    vector<string> randomTrees;
+    vector<PhyloTreeNode*> nodes;
 
-    //vector<string> randomPop;
-    //for (int i = 0; i < 10; i++) {
-    //    string s;
-    //    for (int j = 0; j < 20; j++) {
-    //        s += '0';//(char)(rand()%2+(int)'0');
-    //    }
-    //    randomPop.push_back(s);
-    //}
+    // create a random population of trees
+    for (unsigned int i = 0; i < 4; i++) {
+        nodes = Fasta::readFastaFile("tests/aligned.fasta");
+        PhyloTree t;
+        t.buildRandomTree(nodes);
+        randomTrees.push_back(PhyloTreeNode::prefixRepresentation(t.getRoot()));
+    }
 
-    //EASystem<string> testEA(new MutateString(0.01), new RecombineString(0.7), new RouletteWheelSelection<string>, new PipeFitnessFunc<string>);
-    ////testEA.setLogStream(&cerr);
+    std::ofstream logFile;
+    logFile.open ("log.txt");
+
+
+    EASystem<string> testEA(new MutateTree(nodes.size(), 0.01), new RecombineTree(0.7), new RankSelection<string>, new PipeFitnessFunc<string>);
+    testEA.setLogStream(&logFile);
     //testEA.setElitism(4);
-    //testEA.setDebugging(true);
-    //testEA.setPopulation(randomPop);
-    //testEA.runGenerations(1);
+    testEA.setDebugging(true);
+    testEA.setPopulation(randomTrees);
+    testEA.runGenerations(300);
 
-    //cerr << "Final generation:\n";
-    //testEA.exportGenomes(cerr);
+    cerr << "Final generation:\n";
+    testEA.exportGenomes(cerr);
+
+    logFile.close();
 
     return 0;
 }
