@@ -100,6 +100,7 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
         if (m_logStream) {
             *m_logStream << averageFitness() << '\t' << maxFitness() << '\t'
                 << minFitness() << '\n';
+            m_logStream->flush();
         }
         if (m_debugging) {
             std::cerr << "Generation " << m_generationNumber << "\tavg:\t" <<
