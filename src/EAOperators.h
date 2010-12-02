@@ -6,6 +6,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+
+class lt;
 
 template<typename T>
 class MutationOp {
@@ -76,7 +79,44 @@ public:
     }
 };
 
-// for simdist use: print
+template<typename T>
+class RankSelection : public SelectionOp<T> {
+public:
+    RankSelection() {}
+    virtual ~RankSelection() {}
+    const T& select(const std::vector<T>& pop, const std::vector<double> fitness)
+    {
+        assert(pop.size() > 0);
+
+        std::vector<unsigned int> indices;
+        unsigned int n = fitness.size();
+        unsigned int rankSum =  n/2.0*(n+1);
+
+        for (unsigned int i = 0; i < n; i++) {
+            indices.push_back(i);
+        }
+        sort(indices.begin(), indices.end(), lt(fitness));
+
+        std::vector<unsigned int> ranks(n);
+        for (unsigned int i = 0; i < indices.size(); i++) {
+            ranks[indices[i]] = indices.size()-i;
+        }
+
+        // get a random number between 0 and rank sum ...
+        unsigned int r = rand()%rankSum;
+
+        // ... then run through fitness values until sum >= rankSum and pick
+        // the individual in that position
+        int i = 0;
+        for (; r >= ranks[i]; i++) {
+            r -= ranks[i];
+        }
+
+        return pop[i];
+    }
+};
+
+// for use with simdist: print
 template<typename T>
 class PipeFitnessFunc : public FitnessFunc<T> {
 public:
