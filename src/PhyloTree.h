@@ -23,6 +23,7 @@ public:
     unsigned int noStates() const { return m_nStates; }
     int height() const;
     void addChild(PhyloTreeNode*, double);
+    void removeChild(PhyloTreeNode*);
 
     vector<vector<double> > likelihood(EvolutionModel*);
 
@@ -40,9 +41,13 @@ public:
     PhyloTreeNode* right() const { return m_right; }
 
     void setParent(PhyloTreeNode* parent) { m_parent = parent; }
+    PhyloTreeNode* getParent() const { return m_parent; }
 
     // returns true if node has no parents
     bool isRoot() const { return m_parent == NULL; }
+
+    // returns true if node has no children
+    bool isLeaf() const { return m_left == NULL and m_right == NULL; }
 
     // returns number of children
     unsigned int numChildren() const;
@@ -63,7 +68,10 @@ public:
     double getLeftDist() const { return m_leftDist; }
     double getRightDist() const { return m_rightDist; }
 
+    PhyloTreeNode* findChild(string name);
+
 protected:
+
     string m_name; // species/taxon name
     string m_states; // observed states for each site
 
@@ -124,6 +132,8 @@ public:
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
     static PhyloTree decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s, EvolutionModel* evModel);
+
+    void removeNode(string name);
 
 private:
     PhyloTreeNode* m_rootNode;

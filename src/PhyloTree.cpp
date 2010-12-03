@@ -65,7 +65,8 @@ void PhyloTreeNode::setNumStates(unsigned int n)
     }
 }
 
-void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
+void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance)
+{
     assert(!m_left or !m_right); // only two child nodes are allowed
 
     child->setParent(this);
@@ -82,6 +83,17 @@ void PhyloTreeNode::addChild(PhyloTreeNode* child, double distance) {
     } else if (!m_right) {
         m_right = child;
         m_rightDist = distance;
+    }
+}
+
+void PhyloTreeNode::removeChild(PhyloTreeNode* child)
+{
+    assert(child == m_left or child == m_right);
+
+    if (m_left == child) {
+        m_left = NULL;
+    } else if (m_right == child) {
+        m_right = NULL;
     }
 }
 
@@ -455,4 +467,73 @@ PhyloTree PhyloTree::decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s
     PhyloTree tree(root, evModel);
 
     return tree;
+}
+
+void PhyloTree::removeNode(string name)
+{
+    PhyloTreeNode* node = m_rootNode->findChild(name);
+    double dist = 0.0;
+
+    assert(node->isLeaf());
+
+    PhyloTreeNode* parent = node->getParent();
+
+    PhyloTreeNode* sibling;
+
+    if (parent->left() == node) {
+        sibling = parent->right();
+        dist += parent->getRightDist();
+    } else {
+        assert(parent->left() != NULL);
+        sibling = parent->left();
+        dist += parent->getLeftDist();
+    }
+
+    cerr << "dist: " << dist << '\n';
+
+    if (parent->isRoot()) {
+        if (parent->left() == node) {
+            m_rootNode = parent->right();
+        } else {
+            assert(parent->left() != NULL);
+            m_rootNode = parent->left();
+        }
+        // add dist to children
+        m_rootNode->setLeftDist(m_rootNode->getLeftDist()+dist);
+        m_rootNode->setRightDist(m_rootNode->getRightDist()+dist);
+    } else {
+        PhyloTreeNode* grandparent = parent->getParent();
+
+        if (grandparent->left() == parent) {
+            dist += grandparent->getLeftDist();
+        } else {
+            assert(grandparent->right() == parent);
+            dist += grandparent->getRightDist();
+        }
+        grandparent->removeChild(parent);
+        grandparent->addChild(sibling, dist);
+
+    }
+
+    cerr << "dist: " << dist << '\n';
+
+    parent->removeChild(sibling);
+    delete parent;
+}
+
+PhyloTreeNode* PhyloTreeNode::findChild(string name)
+{
+    if (this->m_name == name) {
+        return this;
+    } else if (!isLeaf()) {
+        PhyloTreeNode* l = m_left->findChild(name);
+        PhyloTreeNode* r = m_right->findChild(name);
+
+        if (l != NULL) return l;
+        else if (r != NULL) return r;
+        else return NULL;
+
+    } else {
+        return NULL;
+    }
 }
