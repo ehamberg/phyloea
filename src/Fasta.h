@@ -12,7 +12,7 @@ class Fasta {
 public:
     // read a fasta file and return a vector of tree nodes containing the
     // nucleotide data from the file
-    static vector<PhyloTreeNode*> readFastaFile(string filename);
+    static vector<PhyloTreeNode*> readFastaFile(string filename, int maxLen = -1);
 };
 
 #endif

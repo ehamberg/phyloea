@@ -14,7 +14,7 @@ using std::set;
 
 using namespace std;
 
-vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
+vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, int maxLen)
 {
     vector<PhyloTreeNode*> nodes;
 
@@ -54,6 +54,11 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename)
         stringstream ss;
         ss << i;
         cerr << "\t[" << i << "]" << ss.str() << " (length: " << data[i].length() << '\n';
+
+        // remove everything over maxlen
+        if (maxLen != -1) {
+            data[i] = data[i].substr(0,maxLen);
+        }
         nodes.push_back(new PhyloTreeNode(ss.str(), data[i]));
     }
 
