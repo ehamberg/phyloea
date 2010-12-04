@@ -53,7 +53,7 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, int maxLen)
     for (unsigned int i = 0; i < data.size(); i++) {
         stringstream ss;
         ss << i;
-        cerr << "\t[" << i << "]" << ss.str() << " (length: " << data[i].length() << '\n';
+        cerr << "\t[" << i << "]" << ss.str() << " (length: " << data[i].length() << ")\n";
 
         // remove everything over maxlen
         if (maxLen != -1) {
