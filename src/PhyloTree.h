@@ -70,6 +70,8 @@ public:
 
     PhyloTreeNode* findChild(string name);
 
+    vector<PhyloTreeNode*> selfAndDescendants();
+
 protected:
 
     string m_name; // species/taxon name

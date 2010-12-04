@@ -308,6 +308,39 @@ unsigned int PhyloTreeNode::numChildren() const
     return c;
 }
 
+PhyloTreeNode* PhyloTreeNode::findChild(string name)
+{
+    if (this->m_name == name) {
+        return this;
+    } else if (!isLeaf()) {
+        PhyloTreeNode* l = m_left->findChild(name);
+        PhyloTreeNode* r = m_right->findChild(name);
+
+        if (l != NULL) return l;
+        else if (r != NULL) return r;
+        else return NULL;
+
+    } else {
+        return NULL;
+    }
+}
+
+vector<PhyloTreeNode*> PhyloTreeNode::selfAndDescendants()
+{
+    vector<PhyloTreeNode*> nodes;
+    nodes.push_back(this);
+    if (m_left != NULL) {
+        vector<PhyloTreeNode*> l = m_left->selfAndDescendants();
+        nodes.insert(nodes.end(), l.begin(), l.end());
+    }
+    if (m_right != NULL) {
+        vector<PhyloTreeNode*> r = m_right->selfAndDescendants();
+        nodes.insert(nodes.end(), r.begin(), r.end());
+    }
+
+    return nodes;
+}
+
 ostream& operator<<(ostream& out, const PhyloTree& t)
 {
     out << t.m_rootNode->links();
@@ -519,21 +552,4 @@ void PhyloTree::removeNode(string name)
 
     parent->removeChild(sibling);
     delete parent;
-}
-
-PhyloTreeNode* PhyloTreeNode::findChild(string name)
-{
-    if (this->m_name == name) {
-        return this;
-    } else if (!isLeaf()) {
-        PhyloTreeNode* l = m_left->findChild(name);
-        PhyloTreeNode* r = m_right->findChild(name);
-
-        if (l != NULL) return l;
-        else if (r != NULL) return r;
-        else return NULL;
-
-    } else {
-        return NULL;
-    }
 }
