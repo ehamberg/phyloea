@@ -75,14 +75,24 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
             T parent1 = m_selectionOp->select(m_population, m_fitnessValues);
             T parent2 = m_selectionOp->select(m_population, m_fitnessValues);
 
-            // generate offspring ...
-            vector<T> offspring = m_recOp->produceOffspring(parent1, parent2);
+            if (m_recOp != NULL) {
+                // recombine ...
+                vector<T> offspring = m_recOp->produceOffspring(parent1, parent2);
 
-            // ... and add these to the new generation
-            for (it = offspring.begin(); it != offspring.end(); ++it) {
-                newGeneration.push_back(*it);
+                // ... and add these to the new generation
+                for (it = offspring.begin(); it != offspring.end(); ++it) {
+                    newGeneration.push_back(*it);
+                }
+            } else { // no recombination
+                newGeneration.push_back(parent1);
+                newGeneration.push_back(parent2);
             }
         }
+
+        if (newGeneration.size()+m_elitism > m_population.size()) {
+            newGeneration.erase(newGeneration.begin()+m_population.size()-m_elitism, newGeneration.end());
+        }
+        assert(newGeneration.size()+m_elitism == m_population.size());
 
         m_mutOp->mutate(newGeneration);
 
@@ -111,13 +121,13 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
 }
 
 // utility method: run for given number of generations
-template <typename T>
+    template <typename T>
 void EASystem<T>::runGenerations(unsigned int noGenerations) 
 {
     runUntil(Generations<vector<T> >(noGenerations));
 }
 
-template <typename T>
+    template <typename T>
 void EASystem<T>::setPopulation(vector<T> pop)
 {
     m_population = pop;

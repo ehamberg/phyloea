@@ -137,6 +137,8 @@ public:
 
     void removeNode(string name);
 
+    void graft(PhyloTreeNode* subtree, PhyloTreeNode* graftPoint);
+
 private:
     PhyloTreeNode* m_rootNode;
     EvolutionModel *m_evModel;

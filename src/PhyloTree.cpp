@@ -193,14 +193,14 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     // check if the cached values are for a different branch length, if so,
     // invalidate the caches
     if (cachedForL != m_leftDist) {
-        cerr << ">>> m_leftDist changed from " << cachedForL << " to " <<
-            m_leftDist << ". clearing cache\n";
+        //cerr << ">>> m_leftDist changed from " << cachedForL << " to " <<
+        //    m_leftDist << ". clearing cache\n";
         plCache.clear();
         llCache.clear();
     }
     if (cachedForR != m_rightDist) {
-        cerr << ">>> m_rightDist changed from " << cachedForR << " to " <<
-            m_rightDist << ". clearing cache\n";
+        //cerr << ">>> m_rightDist changed from " << cachedForR << " to " <<
+        //    m_rightDist << ". clearing cache\n";
         prCache.clear();
         lrCache.clear();
     }
@@ -210,13 +210,13 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
     double xs, ys;
     char nucleotides[4] = {'A', 'C', 'G', 'T' };
 
-    cerr << "computing for " << noStates() << " states...\n";
+    //cerr << "computing for " << noStates() << " states...\n";
     for (unsigned int i = 0; i < noStates(); i++) {
         vector<double> l;
 
-        if (i != 0 and i%1000==0) {
-            cerr << '\t' << i << '\n';
-        }
+        //if (i != 0 and i%1000==0) {
+            //cerr << '\t' << i << '\n';
+        //}
         for (int s = 0; s < 4; s++) {
             xs = ys = 0.0;
             for (int x = 0; x < 4; x++) {
@@ -259,7 +259,6 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 
         m_likelihoods.push_back(l);
     }
-    cerr << "... done\n";
 
     return m_likelihoods;
 }
@@ -462,7 +461,7 @@ PhyloTree PhyloTree::decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s
         if (t == "h") {
             assert(!readingLength);
 
-            cerr << "HTU\n";
+            //cerr << "HTU\n";
 
             PhyloTreeNode* temp = new PhyloTreeNode();
             nodeStack.top()->addChild(temp, branchLength);
@@ -481,7 +480,7 @@ PhyloTree PhyloTree::decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s
             // if not starting with ‘h’ the token should always be a number
             assert(!ss.fail());
 
-            cerr << "OTU #" << n << '\n';
+            //cerr << "OTU #" << n << '\n';
 
             assert(n >= 0 and n < nodes.size());
 
@@ -490,11 +489,14 @@ PhyloTree PhyloTree::decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s
         }
 
         while (nodeStack.size() > 0 and nodeStack.top()->numChildren() == 2) {
-            cerr << "POP" << nodeStack.size() << "\n";
+            //cerr << "POP" << nodeStack.size() << "\n";
             nodeStack.pop();
         }
     }
 
+    if (nodeStack.size() != 0) {
+        cerr << s << '\n';
+    }
     assert(nodeStack.size() == 0);
 
     PhyloTree tree(root, evModel);
@@ -522,7 +524,7 @@ void PhyloTree::removeNode(string name)
         dist += parent->getLeftDist();
     }
 
-    cerr << "dist: " << dist << '\n';
+    //cerr << "dist: " << dist << '\n';
 
     if (parent->isRoot()) {
         if (parent->left() == node) {
@@ -532,8 +534,10 @@ void PhyloTree::removeNode(string name)
             m_rootNode = parent->left();
         }
         // add dist to children
-        m_rootNode->setLeftDist(m_rootNode->getLeftDist()+dist);
-        m_rootNode->setRightDist(m_rootNode->getRightDist()+dist);
+        if (m_rootNode->numChildren() > 0) {
+            m_rootNode->setLeftDist(m_rootNode->getLeftDist()+dist);
+            m_rootNode->setRightDist(m_rootNode->getRightDist()+dist);
+        }
     } else {
         PhyloTreeNode* grandparent = parent->getParent();
 
@@ -548,8 +552,36 @@ void PhyloTree::removeNode(string name)
 
     }
 
-    cerr << "dist: " << dist << '\n';
+    //cerr << "dist: " << dist << '\n';
 
-    parent->removeChild(sibling);
-    delete parent;
+    if (m_rootNode != sibling) {
+        parent->removeChild(sibling);
+    }
+    //delete parent;
+}
+
+void PhyloTree::graft(PhyloTreeNode* subtree, PhyloTreeNode* graftPoint)
+{
+    if (graftPoint->isRoot()) {
+        PhyloTreeNode* forkPoint = new PhyloTreeNode();
+        forkPoint->addChild(graftPoint, 0.666);
+        forkPoint->addChild(subtree, 0.666);
+    } else {
+
+        PhyloTreeNode* parent = graftPoint->getParent();
+        PhyloTreeNode* forkPoint = new PhyloTreeNode();
+
+        double dist = 0.0;
+        if (parent->left() == graftPoint) {
+            parent->removeChild(graftPoint);
+        } else {
+            assert(parent->right() == graftPoint);
+            parent->removeChild(graftPoint);
+        }
+
+        forkPoint->addChild(graftPoint, 0.666);
+        forkPoint->addChild(subtree, 0.666);
+
+        parent->addChild(forkPoint, 0.666);
+    }
 }
