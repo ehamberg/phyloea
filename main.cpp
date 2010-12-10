@@ -7,6 +7,7 @@
 #include <fstream>
 #include <cmath>
 #include <string>
+#include <sstream>
 
 #include "EAOperators.h"
 #include "TreeOperators.h"
@@ -18,10 +19,14 @@ using std::vector;
 
 int main(int argc, const char *argv[])
 {
-    std::ofstream logFile;
-    logFile.open ("log.txt");
+    unsigned int seed = time(NULL);
 
-    unsigned int seed = 1291705571;//time(NULL);
+    std::ostringstream oss;
+    oss << seed;
+    std::ofstream logFile;
+    string logFileName("log");
+    logFileName.append(oss.str()).append(".txt");
+    logFile.open (logFileName.c_str());
 
     logFile << "# random seed: " << seed << std::endl;
     srand(seed);
@@ -30,23 +35,36 @@ int main(int argc, const char *argv[])
     vector<string> randomTrees;
     vector<PhyloTreeNode*> nodes;
 
+    unsigned int popSize = 40;
+    unsigned int elitism = 4;
+    unsigned int gens = 300;
+    double mutRate = 0.1;
+    double recRate = 0.7;
+
+    logFile << "# pop size: " << popSize << std::endl;
+    logFile << "# elitism: " << elitism << std::endl;
+    logFile << "# generations: " << gens << std::endl;
+    logFile << "# mutation rate: " << mutRate << std::endl;
+    logFile << "# recombination rate: " << recRate << std::endl;
+
     // create a random population of trees
-    for (unsigned int i = 0; i < 8; i++) {
+    for (unsigned int i = 0; i < popSize; i++) {
         nodes = Fasta::readFastaFile("tests/aligned.fasta", 0);
         PhyloTree t;
         t.buildRandomTree(nodes);
         randomTrees.push_back(PhyloTreeNode::prefixRepresentation(t.getRoot()));
     }
 
-    EASystem<string> testEA(new MutateTree(nodes.size(), 0.1), new RecombineTree(0.7), new RankSelection<string>, new PipeFitnessFunc<string>);
+    EASystem<string> testEA(new MutateTree(nodes.size(), mutRate), new RecombineTree(recRate), new RankSelection<string>, new PipeFitnessFunc<string>);
     testEA.setLogStream(&logFile);
-    testEA.setElitism(2);
+    testEA.setElitism(elitism);
     testEA.setDebugging(true);
     testEA.setPopulation(randomTrees);
-    testEA.runGenerations(1000);
+    testEA.runGenerations(gens);
 
     cerr << "Final generation:\n";
     testEA.exportGenomes(cerr);
+    testEA.exportGenomes(logFile);
 
     logFile.close();
 
