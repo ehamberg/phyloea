@@ -2,7 +2,7 @@ OBJS := $(patsubst %.cpp,%.o,$(wildcard src/*.cpp))
 TESTOBJS := $(patsubst %.cpp,%.o,$(wildcard tests/*.cpp))
 
 CXX=g++
-CXXFLAGS=-Wall -pedantic -Isrc -g3
+CXXFLAGS=-Wall -pedantic -Isrc -g -O2
 
 LIBS=
 TARGET=./main
