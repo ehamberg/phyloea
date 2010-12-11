@@ -1,0 +1,16 @@
+#!/usr/bin/env runhaskell
+
+import System
+import Control.Monad
+import Data.List
+
+main = do
+    argv    <- getArgs
+    prog    <- getProgName
+    when (length argv < 2) $ do
+        putStrLn $ "usage: " ++ prog ++ " [fasta file] [output file]"
+        exitFailure
+    species <- liftM (filter ((==) '>' . head) . lines) $ readFile $ head argv
+    let n        = length species
+    let mappings = map (\n -> show n ++ "\t" ++ tail (species !! n)) [0..(n-1)]
+    writeFile (argv!!1) $ unlines mappings
