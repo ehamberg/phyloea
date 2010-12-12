@@ -7,8 +7,6 @@
 #include <cmath>
 #include <stdexcept>
 
-static int foo = 0;
-
 using namespace std;
 
 // FIXME: move to utils.cpp
@@ -203,8 +201,6 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
         }
         // finally, add the sub tree to p2 at the point p
         tokens2.insert(tokens2.begin()+p, subTree.begin(), subTree.end());
-
-        cerr << ">>> " << foo++ << detokenize(tokens2, " ") << endl;
 
         children.push_back(detokenize(tokens2));
     } else {
