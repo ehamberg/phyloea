@@ -30,7 +30,7 @@ main: main.o $(OBJS)
 .PHONY:test
 test: $(OBJS) $(TESTOBJS)
 	$(CXX) $(TESTOBJS) $(OBJS) -o $(TESTTARGET) $(TESTLIBS)
-	$(TESTTARGET) --gtest_shuffle 2> /dev/null
+	TERM=xterm $(TESTTARGET) --gtest_shuffle 2> /dev/null
 
 .PHONY:evaluator
 evaluator: evaluator.o $(OBJS)
