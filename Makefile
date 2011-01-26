@@ -40,6 +40,11 @@ evaluator: evaluator.o $(OBJS)
 memcheck:
 	valgrind --tool=memcheck --leak-check=yes $(TARGET)
 
+.PHONY:memcheck
+docs:
+	doxygen Doxyfile
+
+
 .PHONY:clean
 clean:
 	rm -f */*.o *.o core
