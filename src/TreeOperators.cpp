@@ -1,54 +1,13 @@
 #include "TreeOperators.h"
+#include "utils.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <cmath>
-#include <stdexcept>
 
 using namespace std;
-
-// FIXME: move to utils.cpp
-vector<string> tokenize(const string& s)
-{
-    istringstream iss(s);
-    vector<string> tokens;
-    string temp;
-
-    while (iss >> temp) tokens.push_back(temp);
-
-    return tokens;
-}
-
-class BadConversion : public runtime_error {
-public:
-    BadConversion(string const& s) : runtime_error(s) {}
-};
-
-inline double convertToDouble(string const& s)
-{
-    std::istringstream i(s);
-    double x;
-    if (!(i >> x))
-        throw BadConversion("convertToDouble(\"" + s + "\")");
-    return x;
-}
-
-string detokenize(const vector<string>& tokens, string sep = string("\t"))
-{
-    string s;
-
-    vector<string>::const_iterator it;
-    for (it = tokens.begin(); it != tokens.end(); ++it) {
-        s += *it;
-        if (it != tokens.end()-1) {
-            s += sep;
-        }
-    }
-
-    return s;
-}
 
 vector<string> findSubTree(const vector<string>& t, unsigned int n)
 {
