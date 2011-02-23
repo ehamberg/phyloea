@@ -117,6 +117,10 @@ void MutateTree::mutate(vector<string>& genomes)
     }
 }
 
+/** recombination operator for trees represented in preorder notation.
+ *
+ * does prune-delete-graft to recombine two trees
+ */
 vector<string> RecombineTree::produceOffspring(const string& p1, const string& p2)
 {
     vector<string> children;

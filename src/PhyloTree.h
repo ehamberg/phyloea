@@ -111,30 +111,33 @@ public:
     PhyloTree(PhyloTreeNode* r, EvolutionModel* m) : m_rootNode(r), m_evModel(m) {}
     ~PhyloTree();
 
-    // returns the tree's height
+    /** returns the tree's height */
     int height() const;
 
-    // returns the tree's total likelihood
+    /** returns the tree's total likelihood */
     double logLikelihood();
 
-    // returns string representation of tree in graphviz dot format
+    /** returns string representation of tree in graphviz dot format */
     string dot() const;
 
-    // returns string representation of tree in the newick format
+    /** returns string representation of tree in the newick format */
     string newick() const;
 
-    // build a random tree from the given nodes
+    /** build a random tree from the given nodes */
     void buildRandomTree(vector<PhyloTreeNode*> leaves);
 
     void setEvolutionModel(EvolutionModel* m) { m_evModel = m; }
 
-    // return root node
+    /** return root node */
     PhyloTreeNode* getRoot() const { return m_rootNode; }
 
     friend ostream& operator<<(ostream& out, const PhyloTree& t);
 
     static PhyloTree decodePrefixNotation(vector<PhyloTreeNode*> nodes, string s, EvolutionModel* evModel);
 
+    /** removes the node with the given name from the tree.
+     * \param name a valid node name
+     */
     void removeNode(string name);
 
     void graft(PhyloTreeNode* subtree, PhyloTreeNode* graftPoint);

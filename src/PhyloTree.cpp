@@ -560,6 +560,15 @@ void PhyloTree::removeNode(string name)
     //delete parent;
 }
 
+/** Grafts a subtree onto another tree at the given node.
+ * @param subtree is a pointer to the tree to be grafted onto the other tree.
+ * @param graftPoint is a pointer to the node at which the subtree should be
+ * grafted on to.
+ *
+ * If the graft point is the root node, a new root node is created which get the
+ * old root and the new subtree as children. If the graft point is not the root,
+ * the graft point is deleted
+ */
 void PhyloTree::graft(PhyloTreeNode* subtree, PhyloTreeNode* graftPoint)
 {
     if (graftPoint->isRoot()) {

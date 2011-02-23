@@ -19,8 +19,13 @@ public:
  */
 vector<string> tokenize(const string& s);
 
-double convertToDouble(string const& s);
-
+/** concatenates a vector of strings.
+ */
 string detokenize(const vector<string>& tokens, string sep = string("\t"));
+
+/** converts a string to a double.
+ * \exception BadConversion String cannot be converted to float.
+ */
+double convertToDouble(string const& s);
 
 #endif
