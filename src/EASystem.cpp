@@ -1,4 +1,5 @@
 #include "EASystem.h"
+#include <ctime>
 
 // generator for number sequence 0, 1, 2, …
 struct c_unique {
@@ -107,9 +108,10 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
         m_population = newGeneration;
         m_fitnessValues = m_fitnessFunc->fitness(m_population);
 
+        // print timestamp, avg. fitness, max fitness and min fitness for generation
         if (m_logStream) {
-            *m_logStream << averageFitness() << '\t' << maxFitness() << '\t'
-                << minFitness() << '\n';
+            *m_logStream << std::time(0) << '\t' << averageFitness() << '\t' <<
+                maxFitness() << '\t' << minFitness() << '\n';
             m_logStream->flush();
         }
         if (m_debugging) {

@@ -122,7 +122,7 @@ TEST_F(EASystemTest, MonotonicWithElitism) {
     int i = 0;
     std::vector<double> fitnessHist;
     while (iss >> s) {
-        if (i++%3 == 1) {
+        if (i++%4 == 2) {
             fitnessHist.push_back(s);
         }
     }
