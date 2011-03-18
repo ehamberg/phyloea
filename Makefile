@@ -21,6 +21,7 @@ src/AMaxOperators.o: src/AMaxOperators.cpp src/AMaxOperators.h
 src/EvolutionModel.o: src/EvolutionModel.cpp src/EvolutionModel.h
 src/Fasta.o: src/Fasta.cpp src/Fasta.h
 src/TreeOperators.o: src/TreeOperators.cpp src/TreeOperators.h
+main.o: src/EAOperators.h src/EvolutionModel.h src/Fasta.h src/EASystem.h
 
 .PHONY:main
 main: main.o $(OBJS)
