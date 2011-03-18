@@ -14,13 +14,39 @@
 
 using std::cout;
 using std::cerr;
+using std::endl;
 using std::string;
 using std::vector;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int seed = time(NULL);
+    if (argc < 6) {
+        cerr << "Usage: " << argv[0] << " [pop size] [elitism] [gens] "
+            << "[mut. rate] [recomb. rate]" << endl;
+        return 1;
+    }
 
+    unsigned int popSize, elitism, gens;
+    double mutRate, recRate;
+
+    // read arguments and assign their values to the EA parameters
+    {
+        std::stringstream ss;
+        for (unsigned int i = 1; i < 6; i++) {
+            ss << argv[i];
+        }
+
+        ss >> popSize;
+        ss >> elitism;
+        ss >> gens;
+        ss >> mutRate;
+        ss >> recRate;
+    }
+
+    unsigned int seed = time(NULL);
+    srand(seed);
+
+    // create a log file named "log[seed].txt"
     std::ostringstream oss;
     oss << seed;
     std::ofstream logFile;
@@ -28,26 +54,17 @@ int main(int argc, const char *argv[])
     logFileName.append(oss.str()).append(".txt");
     logFile.open (logFileName.c_str());
 
-    logFile << "# random seed: " << seed << std::endl;
-    srand(seed);
-    //Kimura* k = new Kimura(10.0);
-
-    vector<string> randomTrees;
-    vector<PhyloTreeNode*> nodes;
-
-    unsigned int popSize = 40;
-    unsigned int elitism = 4;
-    unsigned int gens = 300;
-    double mutRate = 0.1;
-    double recRate = 0.7;
-
-    logFile << "# pop size: " << popSize << std::endl;
-    logFile << "# elitism: " << elitism << std::endl;
-    logFile << "# generations: " << gens << std::endl;
-    logFile << "# mutation rate: " << mutRate << std::endl;
-    logFile << "# recombination rate: " << recRate << std::endl;
+    // record seed and EA parameters
+    logFile << "# random seed: " << seed << endl;
+    logFile << "# pop size: " << popSize << endl;
+    logFile << "# elitism: " << elitism << endl;
+    logFile << "# generations: " << gens << endl;
+    logFile << "# mutation rate: " << mutRate << endl;
+    logFile << "# recombination rate: " << recRate << endl;
 
     // create a random population of trees
+    vector<string> randomTrees;
+    vector<PhyloTreeNode*> nodes;
     for (unsigned int i = 0; i < popSize; i++) {
         nodes = Fasta::readFastaFile("tests/aligned.fasta", 0);
         PhyloTree t;
@@ -55,7 +72,9 @@ int main(int argc, const char *argv[])
         randomTrees.push_back(PhyloTreeNode::prefixRepresentation(t.getRoot()));
     }
 
-    EASystem<string> testEA(new MutateTree(nodes.size(), mutRate), new RecombineTree(recRate), new RankSelection<string>, new PipeFitnessFunc<string>);
+    EASystem<string> testEA(new MutateTree(nodes.size(), mutRate),
+            new RecombineTree(recRate), new RankSelection<string>,
+            new PipeFitnessFunc<string>);
     testEA.setLogStream(&logFile);
     testEA.setElitism(elitism);
     testEA.setDebugging(true);
@@ -64,6 +83,7 @@ int main(int argc, const char *argv[])
 
     cerr << "Final generation:\n";
     testEA.exportGenomes(cerr);
+    logFile << "Final generation (best first):\n";
     testEA.exportGenomes(logFile);
 
     logFile.close();
