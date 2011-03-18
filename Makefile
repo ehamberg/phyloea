@@ -5,7 +5,7 @@ CXX=g++
 CXXFLAGS=-Wall -pedantic -Isrc -g -O2
 
 LIBS=
-TARGET=./main
+TARGET=./master
 
 TESTLIBS=-lgtest -lpthread
 TESTTARGET=tests/runtests
@@ -13,7 +13,7 @@ TESTTARGET=tests/runtests
 EVTARGET=evaluator
 
 .PHONY:all
-all: main evaluator test
+all: master evaluator test
 
 src/PhyloTree.o: src/PhyloTree.cpp src/PhyloTree.h
 src/EASystem.o: src/EASystem.cpp src/EASystem.h
@@ -23,8 +23,8 @@ src/Fasta.o: src/Fasta.cpp src/Fasta.h
 src/TreeOperators.o: src/TreeOperators.cpp src/TreeOperators.h
 main.o: src/EAOperators.h src/EvolutionModel.h src/Fasta.h src/EASystem.h
 
-.PHONY:main
-main: main.o $(OBJS)
+.PHONY:master
+master: main.o $(OBJS)
 	@echo "$(OBJS)"
 	$(CXX) main.o $(OBJS) $(CXXFLAGS) -o $(TARGET) $(LIBS)
 
