@@ -20,27 +20,42 @@ using std::vector;
 
 int main(int argc, const char *argv[])
 {
-    if (argc < 6) {
+    if (argc < 7) {
         cerr << "Usage: " << argv[0] << " [pop size] [elitism] [gens] "
-            << "[mut. rate] [recomb. rate]" << endl;
+            << "[mut. rate] [recomb. rate] [log file path]" << endl;
         return 1;
     }
 
     unsigned int popSize, elitism, gens;
     double mutRate, recRate;
+    string logFilePath;
 
     // read arguments and assign their values to the EA parameters
     {
-        std::stringstream ss;
-        for (unsigned int i = 1; i < 6; i++) {
-            ss << argv[i];
-        }
+	    std::stringstream ss;
+	    ss << argv[1];
+	    ss >> popSize;
+	    ss.clear();
 
-        ss >> popSize;
-        ss >> elitism;
-        ss >> gens;
-        ss >> mutRate;
-        ss >> recRate;
+	    ss << argv[2];
+	    ss >> elitism;
+	    ss.clear();
+
+	    ss << argv[3];
+	    ss >> gens;
+	    ss.clear();
+
+	    ss << argv[4];
+	    ss >> mutRate;
+	    ss.clear();
+
+	    ss << argv[5];
+	    ss >> recRate;
+	    ss.clear();
+
+	    ss << argv[6];
+	    ss >> logFilePath;
+	    ss.clear();
     }
 
     unsigned int seed = time(NULL);
@@ -52,15 +67,18 @@ int main(int argc, const char *argv[])
     std::ofstream logFile;
     string logFileName("log");
     logFileName.append(oss.str()).append(".txt");
-    logFile.open (logFileName.c_str());
+    logFile.open ((logFilePath+"/"+logFileName).c_str());
 
     // record seed and EA parameters
-    logFile << "# random seed: " << seed << endl;
-    logFile << "# pop size: " << popSize << endl;
-    logFile << "# elitism: " << elitism << endl;
-    logFile << "# generations: " << gens << endl;
-    logFile << "# mutation rate: " << mutRate << endl;
-    logFile << "# recombination rate: " << recRate << endl;
+    cerr << "# random seed: " << seed << endl;
+    cerr << "# pop size: " << popSize << endl;
+    cerr << "# elitism: " << elitism << endl;
+    cerr << "# generations: " << gens << endl;
+    cerr << "# mutation rate: " << mutRate << endl;
+    cerr << "# recombination rate: " << recRate << endl;
+    cerr << "# log file path: " << logFilePath + logFileName << endl;
+
+    cerr << "aff\n";
 
     // create a random population of trees
     vector<string> randomTrees;
@@ -72,6 +90,8 @@ int main(int argc, const char *argv[])
         randomTrees.push_back(PhyloTreeNode::prefixRepresentation(t.getRoot()));
     }
 
+    cerr << "raff\n";
+
     EASystem<string> testEA(new MutateTree(nodes.size(), mutRate),
             new RecombineTree(recRate), new RankSelection<string>,
             new PipeFitnessFunc<string>);
@@ -79,6 +99,8 @@ int main(int argc, const char *argv[])
     testEA.setElitism(elitism);
     testEA.setDebugging(true);
     testEA.setPopulation(randomTrees);
+    cerr << "baff\n";
+
     testEA.runGenerations(gens);
 
     cerr << "Final generation:\n";
