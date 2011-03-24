@@ -20,15 +20,16 @@ using std::vector;
 
 int main(int argc, const char *argv[])
 {
-    if (argc < 7) {
+    if (argc < 8) {
         cerr << "Usage: " << argv[0] << " [pop size] [elitism] [gens] "
-            << "[mut. rate] [recomb. rate] [log file path]" << endl;
+            << "[mut. rate] [recomb. rate] [sequence file.fasta] "
+            << "[log file path]" << endl;
         return 1;
     }
 
     unsigned int popSize, elitism, gens;
     double mutRate, recRate;
-    string logFilePath;
+    string seqFile, logFilePath;
 
     // read arguments and assign their values to the EA parameters
     {
@@ -54,6 +55,10 @@ int main(int argc, const char *argv[])
 	    ss.clear();
 
 	    ss << argv[6];
+	    ss >> seqFile;
+	    ss.clear();
+
+	    ss << argv[7];
 	    ss >> logFilePath;
 	    ss.clear();
     }
@@ -84,13 +89,11 @@ int main(int argc, const char *argv[])
     vector<string> randomTrees;
     vector<PhyloTreeNode*> nodes;
     for (unsigned int i = 0; i < popSize; i++) {
-        nodes = Fasta::readFastaFile("tests/aligned.fasta", 0);
+        nodes = Fasta::readFastaFile(seqFile, 0);
         PhyloTree t;
         t.buildRandomTree(nodes);
         randomTrees.push_back(PhyloTreeNode::prefixRepresentation(t.getRoot()));
     }
-
-    cerr << "raff\n";
 
     EASystem<string> testEA(new MutateTree(nodes.size(), mutRate),
             new RecombineTree(recRate), new RankSelection<string>,
@@ -99,7 +102,6 @@ int main(int argc, const char *argv[])
     testEA.setElitism(elitism);
     testEA.setDebugging(true);
     testEA.setPopulation(randomTrees);
-    cerr << "baff\n";
 
     testEA.runGenerations(gens);
 
