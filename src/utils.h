@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <cstdlib>
 
 using std::vector;
 using std::string;
@@ -27,5 +28,14 @@ string detokenize(const vector<string>& tokens, string sep = string("\t"));
  * \exception BadConversion String cannot be converted to float.
  */
 double convertToDouble(string const& s);
+
+/** converts a double to a string representation.
+ * \exception BadConversion double cannot be represented as string.
+ */
+string convertToString(const double x);
+
+/** returns a random number in the range [0,1]
+ */
+inline double randZeroToOne() { return (double)rand()/(double)RAND_MAX; }
 
 #endif

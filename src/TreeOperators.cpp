@@ -104,7 +104,7 @@ void MutateTree::mutate(vector<string>& genomes)
         iss >> len;
 
         // add [-0.1,0.1] to length
-        len += -0.1+(rand()/(double)RAND_MAX*0.2);
+        len += -0.1+(randZeroToOne()*0.2);
 
         if (len < 0.000001) len = 0.000001;
 
@@ -124,7 +124,7 @@ void MutateTree::mutate(vector<string>& genomes)
 vector<string> RecombineTree::produceOffspring(const string& p1, const string& p2)
 {
     vector<string> children;
-    if ((double)rand()/(double)RAND_MAX >= m_recombProb) {
+    if (randZeroToOne() >= m_recombProb) {
         vector<string> tokens1 = tokenize(p1);
         vector<string> tokens2 = tokenize(p2);
 
@@ -155,12 +155,12 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
         if (p == 0) { // h x l y
             // prepend an HTU node
             subTree.insert(subTree.begin(), string("h"));
-            subTree.insert(subTree.begin()+1, string("0.666"));
-            subTree.insert(subTree.end(), string("0.666"));
+            subTree.insert(subTree.begin()+1, convertToString(randZeroToOne()));
+            subTree.insert(subTree.end(), convertToString(randZeroToOne()));
         } else { // x h y l
-            subTree.insert(subTree.begin(), string("0.666"));
+            subTree.insert(subTree.begin(), convertToString(randZeroToOne()));
             subTree.insert(subTree.begin()+1, string("h"));
-            subTree.insert(subTree.begin()+2, string("0.666"));
+            subTree.insert(subTree.begin()+2, convertToString(randZeroToOne()));
         }
         // finally, add the sub tree to p2 at the point p
         tokens2.insert(tokens2.begin()+p, subTree.begin(), subTree.end());

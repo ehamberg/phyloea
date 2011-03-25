@@ -1,4 +1,5 @@
 #include "PhyloTree.h"
+#include "utils.h"
 
 #include <sstream>
 #include <iostream>
@@ -418,12 +419,12 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
     vector<PhyloTreeNode*>::iterator it;
     for (it = internal.begin(); it != internal.end()-1; ++it) {
         if ((*(it+1))->isRoot()) {
-            (*it)->addChild(*(it+1), rand()/(double)RAND_MAX);
+            (*it)->addChild(*(it+1), randZeroToOne());
         }
 
         // add one more with a probability of 0.5
         if (rand()%2==0 and it != internal.end()-2 and (*(it+2))->isRoot()) {
-            (*it)->addChild(*(it+2), rand()/(double)RAND_MAX);
+            (*it)->addChild(*(it+2), randZeroToOne());
         }
     }
 
@@ -431,7 +432,7 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
     vector<PhyloTreeNode*>::iterator lt = leaves.begin();
     for (it = internal.begin(); it != internal.end(); ++it) {
         while ((*it)->numChildren() < 2) {
-            (*it)->addChild(*(lt++), rand()/(double)RAND_MAX);
+            (*it)->addChild(*(lt++), randZeroToOne());
         }
     }
 

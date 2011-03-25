@@ -15,15 +15,6 @@ vector<string> tokenize(const string& s)
     return tokens;
 }
 
-double convertToDouble(string const& s)
-{
-    std::istringstream i(s);
-    double x;
-    if (!(i >> x))
-        throw BadConversion("convertToDouble(\"" + s + "\")");
-    return x;
-}
-
 string detokenize(const vector<string>& tokens, string sep)
 {
     string s;
@@ -37,4 +28,21 @@ string detokenize(const vector<string>& tokens, string sep)
     }
 
     return s;
+}
+
+double convertToDouble(string const& s)
+{
+    std::istringstream i(s);
+    double x;
+    if (!(i >> x))
+        throw BadConversion("convertToDouble(\"" + s + "\")");
+    return x;
+}
+
+string convertToString(double x)
+{
+    std::ostringstream o;
+    if (!(o << x))
+        throw BadConversion("stringify(double)");
+    return o.str();
 }
