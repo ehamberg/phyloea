@@ -75,15 +75,13 @@ int main(int argc, const char *argv[])
     logFile.open ((logFilePath+"/"+logFileName).c_str());
 
     // record seed and EA parameters
-    cerr << "# random seed: " << seed << endl;
-    cerr << "# pop size: " << popSize << endl;
-    cerr << "# elitism: " << elitism << endl;
-    cerr << "# generations: " << gens << endl;
-    cerr << "# mutation rate: " << mutRate << endl;
-    cerr << "# recombination rate: " << recRate << endl;
-    cerr << "# log file path: " << logFilePath + logFileName << endl;
-
-    cerr << "aff\n";
+    logFile << "# random seed: " << seed << endl;
+    logFile << "# pop size: " << popSize << endl;
+    logFile << "# elitism: " << elitism << endl;
+    logFile << "# generations: " << gens << endl;
+    logFile << "# mutation rate: " << mutRate << endl;
+    logFile << "# recombination rate: " << recRate << endl;
+    logFile << "# log file path: " << logFilePath + logFileName << endl;
 
     // create a random population of trees
     vector<string> randomTrees;
@@ -107,7 +105,7 @@ int main(int argc, const char *argv[])
 
     cerr << "Final generation:\n";
     testEA.exportGenomes(cerr);
-    logFile << "Final generation (best first):\n";
+    logFile << "\n\nFinal generation (best first):\n";
     testEA.exportGenomes(logFile);
 
     logFile.close();
