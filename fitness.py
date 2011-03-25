@@ -7,6 +7,10 @@ import subprocess
 import tempfile
 import os
 
+if len(sys.argv) < 2:
+    sys.stderr.write("Usage: "+sys.argv[0]+" [phy file]\n");
+    sys.exit(1)
+
 line = sys.stdin.readline()
 while line:
     newick_data = newick(line)
@@ -20,10 +24,10 @@ while line:
     #print(open(tree_file.name,"rb").read())
     #print "----"
 
-    output,x = subprocess.Popen(["phyml", "-i", "tests/aligned.phy", "-b", "4",
+    output,x = subprocess.Popen(["phyml", "-i", sys.argv[1], "-b", "4",
         "-m", "K80", "-f", "0.25,0.25,0.25,0.25", "-t", "10.0", "-u",
         tree_file.name, "-o", "n"], stdout=subprocess.PIPE).communicate()
-    #print output
+    #sys.stderr.write(output+'\n')
 
     #print ["phyml", "-i", "tests/aligned.phy", "-b", "4", "-m", "K80", "-f",
     #       "0.25,0.25,0.25,0.25", "-t", "10.0", "-u", tree_file.name, "-o", "n"]
