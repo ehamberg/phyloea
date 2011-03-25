@@ -34,6 +34,7 @@ PhyloTreeNode::PhyloTreeNode()
     m_nStates = 0;
 
     m_left = m_right = NULL;
+    m_cachedForL = m_cachedForR = -1.0;
 }
 
 PhyloTreeNode::PhyloTreeNode(string name, string states)
@@ -192,14 +193,14 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 
     // check if the cached values are for a different branch length, if so,
     // invalidate the caches
-    if (cachedForL != m_leftDist) {
-        //cerr << ">>> m_leftDist changed from " << cachedForL << " to " <<
+    if (m_cachedForL != m_leftDist) {
+        //cerr << ">>> m_leftDist changed from " << m_cachedForL << " to " <<
         //    m_leftDist << ". clearing cache\n";
         plCache.clear();
         llCache.clear();
     }
-    if (cachedForR != m_rightDist) {
-        //cerr << ">>> m_rightDist changed from " << cachedForR << " to " <<
+    if (m_cachedForR != m_rightDist) {
+        //cerr << ">>> m_rightDist changed from " << m_cachedForR << " to " <<
         //    m_rightDist << ". clearing cache\n";
         prCache.clear();
         lrCache.clear();
@@ -244,8 +245,8 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
 
                 if (llCache.empty()) {
                     assert(lrCache.empty());
-                    cachedForL = m_leftDist;
-                    cachedForR = m_rightDist;
+                    m_cachedForL = m_leftDist;
+                    m_cachedForR = m_rightDist;
                     llCache = m_left->likelihood(eModel);
                     lrCache = m_right->likelihood(eModel);
                 }

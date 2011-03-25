@@ -99,8 +99,8 @@ protected:
 
     // record the branch lengths the cache is for so the cache can be
     // invalidated on changes
-    double cachedForL;
-    double cachedForR;
+    double m_cachedForL;
+    double m_cachedForR;
 };
 
 
