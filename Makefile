@@ -41,7 +41,7 @@ evaluator: evaluator.o $(OBJS)
 memcheck:
 	valgrind --tool=memcheck --leak-check=yes $(TARGET)
 
-.PHONY:memcheck
+.PHONY:docs
 docs:
 	doxygen Doxyfile
 
