@@ -153,7 +153,7 @@ double EASystem<T>::averageFitness() const
 template <typename T>
 double EASystem<T>::maxFitness() const
 {
-    double highest = m_fitnessValues.at(1);
+    double highest = m_fitnessValues.at(0);
     vector<double>::const_iterator cdit;
     for (cdit = m_fitnessValues.begin()+1; cdit != m_fitnessValues.end(); ++cdit) {
         if (*cdit > highest) {
