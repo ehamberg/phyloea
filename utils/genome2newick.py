@@ -2,17 +2,17 @@
 
 import sys
 
-def newick(line):
+def newick(line, branchLengths = True):
     lengths = []
     arity = [2]
     index = -1
 
     newick = ""
 
-    for token in line.split('\t'):
+    for token in line.strip().split('\t'):
         index += 1
 
-        if index % 2 == 1:
+        if branchLengths and index % 2 == 1:
             lengths.append(token)
             continue
 
@@ -22,14 +22,16 @@ def newick(line):
             arity.append(2)
         else:
             newick += token
-            newick += ':'
-            newick += lengths.pop()
+            if branchLengths:
+                newick += ':'
+                newick += lengths.pop()
             if arity[-1] == 1:
                 newick += ','
 
-        while arity[-1] == 0 and len(lengths) > 0:
-            newick += '):'
-            newick += lengths.pop()
+        while arity[-1] == 0 and (not branchLengths or len(lengths) > 0):
+            newick += ')'
+            if branchLengths:
+                newick += ':' +  lengths.pop()
             del arity[-1]
             if arity[-1] == 1 and len(arity) > 1:
                 newick += ','
@@ -39,4 +41,7 @@ def newick(line):
     return newick
 
 if __name__ == "__main__":
-    print(newick(sys.stdin.readline()))
+    if len(sys.argv) > 1 and sys.argv[1] == "--no-lengths":
+        print(newick(sys.stdin.readline(), False))
+    else:
+        print(newick(sys.stdin.readline()))
