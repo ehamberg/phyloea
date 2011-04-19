@@ -6,6 +6,11 @@
 #include <vector>
 #include <string>
 
+using std::vector;
+using std::string;
+
+void pruneTree(vector<string>& tokens, const vector<string>& leaves);
+
 class MutateTree : public MutationOp<std::string> {
 public:
     MutateTree(unsigned int numNodes, double mutRate) : m_mutationRate(mutRate), m_numNodes(numNodes) {}

@@ -38,6 +38,8 @@ vector<string> findSubTree(const vector<string>& t, unsigned int n)
     return sub;
 }
 
+/** remove the given leaves from the tree.
+ */
 void pruneTree(vector<string>& tokens, const vector<string>& leaves)
 {
     vector<string>::const_iterator it;
@@ -47,11 +49,13 @@ void pruneTree(vector<string>& tokens, const vector<string>& leaves)
                 continue;
             }
 
-            if (tokens.at(i) == *it) {
-                // we found the token
+            if (tokens.at(i) == *it) { // we found the token
                 // erase node
+                //cerr << "erasing " << *it << endl;
                 tokens.erase(tokens.begin()+i);
+
                 // erase branch length
+                //cerr << "erasing " << tokens.at(i-1) << endl;
                 tokens.erase(tokens.begin()+(i-1));
 
                 // find previous HTU node
@@ -62,13 +66,8 @@ void pruneTree(vector<string>& tokens, const vector<string>& leaves)
                     tokens.erase(tokens.begin()+j);
 
                     // record and erase branch length
-                    string len = tokens.at(j-1);
                     tokens.erase(tokens.begin()+(j-1));
 
-                    double newLen = convertToDouble(len)+convertToDouble(tokens.at(j-1));
-                    std::ostringstream s;
-                    s << newLen;
-                    tokens[j-1] = s.str();
                 } else if (j == 0) {
                     // there is only one node left on this side of the root
                     tokens.erase(tokens.begin(), tokens.begin()+2);
@@ -128,7 +127,7 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
         vector<string> tokens1 = tokenize(p1);
         vector<string> tokens2 = tokenize(p2);
 
-        // # of nodes
+        // # of nodes in p1
         unsigned int n = ceil(tokens1.size()/2.0);
 
         // find a random subtree root from p1
@@ -149,6 +148,7 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
         // remove the leaves found in the p1 sub tree from p2
         pruneTree(tokens2, subLeaves);
 
+        // find a random node on the tree
         int p = (rand()%int(ceil(tokens2.size()/2.0)))*2-1;
         if (p < 1) p = 0;
 
@@ -162,6 +162,7 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
             subTree.insert(subTree.begin()+1, string("h"));
             subTree.insert(subTree.begin()+2, convertToString(randZeroToOne()));
         }
+
         // finally, add the sub tree to p2 at the point p
         tokens2.insert(tokens2.begin()+p, subTree.begin(), subTree.end());
 
