@@ -6,7 +6,9 @@
 
 #include "PhyloTree.h"
 #include "EvolutionModel.h"
+#include "TreeOperators.h"
 #include "Fasta.h"
+#include "utils.h"
 
 class PhyloTreeTest : public ::testing::Test {
 protected:
@@ -142,3 +144,36 @@ TEST_F(PhyloTreeTest, PrefixCoding) {
     ASSERT_DOUBLE_EQ(lh1, lh2);
 }
 
+TEST_F(PhyloTreeTest, PruneBranchLength) {
+    PhyloTreeNode* root = new PhyloTreeNode("h", "");
+    root->addChild(new PhyloTreeNode("a", ""), 7);
+
+    PhyloTreeNode* i1 = new PhyloTreeNode("h", "");
+    PhyloTreeNode* i2 = new PhyloTreeNode("h", "");
+
+    root->addChild(i1, 8);
+
+    i1->addChild(i2, 9);
+    i1->addChild(new PhyloTreeNode("d", ""), 10);
+
+    i2->addChild(new PhyloTreeNode("b", ""), 11);
+    i2->addChild(new PhyloTreeNode("c", ""), 12);
+
+    PhyloTree tree(root, NULL);
+
+    vector<string> tokens = tokenize(PhyloTreeNode::prefixRepresentation(root));
+    vector<string> toRemove;
+    toRemove.push_back("c");
+    toRemove.push_back("d");
+
+    vector<string>::const_iterator it;
+    for (it = tokens.begin(); it != tokens.end(); ++it) {
+        std::cerr << "][" << *it << std::endl;
+    }
+
+    pruneTree(tokens, toRemove);
+
+    for (it = tokens.begin(); it != tokens.end(); ++it) {
+        std::cerr << "[]" << *it << std::endl;
+    }
+}
