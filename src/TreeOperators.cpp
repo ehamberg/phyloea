@@ -82,6 +82,8 @@ void MutateTree::mutate(vector<string>& genomes)
 {
     vector<string>::iterator it;
     for (it = genomes.begin(); it != genomes.end(); ++it) {
+        if (randZeroToOne() > m_mutationRate) continue;
+
         // pick a random branch length
         unsigned int n = (rand()%(m_numNodes+1))*2+1;
         string s;
