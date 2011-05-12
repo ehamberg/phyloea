@@ -147,7 +147,7 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
 
 // utility method: run for given number of generations
     template <typename T>
-void EASystem<T>::runGenerations(unsigned int noGenerations) 
+void EASystem<T>::runGenerations(unsigned int noGenerations)
 {
     runUntil(Generations<vector<T> >(noGenerations));
 }
