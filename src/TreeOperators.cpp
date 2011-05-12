@@ -112,7 +112,9 @@ void MutateTree::mutate(vector<string>& genomes)
         ostringstream oss;
         oss << len;
 
+        cerr << "bef:\t" << *it << endl;
         it->replace(startPos, (endPos-startPos), oss.str());
+        cerr << "mut:\t" << *it << endl;
         //cerr << *it << endl;
         //cerr << "==========" << endl;
     }
@@ -126,6 +128,8 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
 {
     vector<string> children;
     if (randZeroToOne() >= m_recombProb) {
+        cerr << "p1:\t" << p1 << endl;
+        cerr << "p2:\t" << p2 << endl;
         vector<string> tokens1 = tokenize(p1);
         vector<string> tokens2 = tokenize(p2);
 
@@ -168,6 +172,7 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
         // finally, add the sub tree to p2 at the point p
         tokens2.insert(tokens2.begin()+p, subTree.begin(), subTree.end());
 
+        cerr << "off:\t" << detokenize(tokens2) << endl;
         children.push_back(detokenize(tokens2));
     } else {
         children.push_back(p1);

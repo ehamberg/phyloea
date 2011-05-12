@@ -127,7 +127,9 @@ public:
         std::vector<double> fitnessVals(genomes.size());
 
         typename std::vector<T>::const_iterator it;
+        int ii = 1;
         for (it = genomes.begin(); it != genomes.end(); ++it) {
+            std::cerr << ii++ << " requesting fitness for " << *it << '\n';
             std::cout << *it << '\n';
         }
 
