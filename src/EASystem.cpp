@@ -70,22 +70,46 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
     while (!stoppingCriterion(m_population, m_generationNumber++)) {
         vector<T> newGeneration;
 
+        const double avgFitness = averageFitness();
+
         typename vector<T>::const_iterator it;
         while (newGeneration.size()+m_elitism < m_population.size()) {
             T parent1 = m_selectionOp->select(m_population, m_fitnessValues);
             T parent2 = m_selectionOp->select(m_population, m_fitnessValues);
 
-            if (m_recOp != NULL) {
-                // recombine ...
-                vector<T> offspring = m_recOp->produceOffspring(parent1, parent2);
+            unsigned int nOffspring = 1;
+            unsigned int idx_p1 = 0;
+            unsigned int idx_p2 = 0;
 
-                // ... and add these to the new generation
-                for (it = offspring.begin(); it != offspring.end(); ++it) {
-                    newGeneration.push_back(*it);
+            for ( ; parent1 != m_population.at(idx_p1)
+                    && idx_p1 < m_population.size(); idx_p1++);
+
+            for ( ; parent2 != m_population.at(idx_p2)
+                    && idx_p1 < m_population.size(); idx_p2++);
+
+            if (idx_p1 != m_population.size()
+             && m_fitnessValues.at(idx_p1) > avgFitness) {
+                ++nOffspring;
+            }
+
+            if (idx_p2 != m_population.size()
+             && m_fitnessValues.at(idx_p2) > avgFitness) {
+                ++nOffspring;
+            }
+
+            assert(m_recOp != NULL);
+            // recombine ...
+            vector<T> offspring;
+            for (unsigned int i = 0; i < nOffspring; i++) {
+                vector<T> children = m_recOp->produceOffspring(parent1, parent2);
+                for (it = children.begin(); it != children.end(); ++it) {
+                    offspring.push_back(*it);
                 }
-            } else { // no recombination
-                newGeneration.push_back(parent1);
-                newGeneration.push_back(parent2);
+            }
+
+            // ... and add these to the new generation
+            for (it = offspring.begin(); it != offspring.end(); ++it) {
+                newGeneration.push_back(*it);
             }
         }
 
