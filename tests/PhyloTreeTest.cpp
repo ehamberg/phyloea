@@ -144,7 +144,7 @@ TEST_F(PhyloTreeTest, PrefixCoding) {
     ASSERT_DOUBLE_EQ(lh1, lh2);
 }
 
-TEST_F(PhyloTreeTest, PruneBranchLength) {
+/*TEST_F(PhyloTreeTest, PruneBranchLength) {
     PhyloTreeNode* root = new PhyloTreeNode("h", "");
     root->addChild(new PhyloTreeNode("a", ""), 7);
 
@@ -176,4 +176,4 @@ TEST_F(PhyloTreeTest, PruneBranchLength) {
     for (it = tokens.begin(); it != tokens.end(); ++it) {
         std::cerr << "[]" << *it << std::endl;
     }
-}
+}*/
