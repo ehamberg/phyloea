@@ -68,7 +68,6 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
     assert(m_population.size() > 0);
 
     while (!stoppingCriterion(m_population, m_generationNumber++)) {
-        // get fitness for all genomes
         vector<T> newGeneration;
 
         typename vector<T>::const_iterator it;
