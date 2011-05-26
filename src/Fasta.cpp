@@ -54,7 +54,7 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, int maxLen)
 
     assert(data.size() == descriptions.size());
 
-    cerr << "Read " << data.size() << " sequences:\n";
+    //cerr << "FASTA: Read " << data.size() << " sequences:\n";
     for (unsigned int i = 0; i < data.size(); i++) {
         stringstream ss;
         ss << i;
