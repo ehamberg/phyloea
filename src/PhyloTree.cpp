@@ -256,8 +256,12 @@ vector<vector<double> > PhyloTreeNode::likelihood(EvolutionModel* eModel)
                 xs += p1*l1;
                 ys += p2*l2;
             }
+
             double L = eModel->prior(nucleotides[s])*xs*ys;
-            assert(std::fpclassify(L) == FP_NORMAL);
+
+            assert(!std::isinf(L));
+            assert(!std::isnan(L));
+
             l.push_back(L);
         }
 
@@ -382,9 +386,18 @@ double PhyloTree::logLikelihood()
             siteSum += (*jt);
         }
 
-        assert(std::fpclassify(siteSum) == FP_NORMAL);
+        assert(!std::isinf(siteSum));
+        assert(!std::isnan(siteSum));
 
-        ret += log10(siteSum/4.0);
+        double siteAvg = siteSum/4.0;
+
+        assert(!std::isinf(siteAvg));
+        assert(!std::isnan(siteAvg));
+
+        ret += log10(siteAvg);
+
+        assert(!std::isinf(ret));
+        assert(!std::isnan(ret));
     }
 
     return ret;
