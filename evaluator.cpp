@@ -32,7 +32,7 @@ int main(int argc, const char *argv[])
 
     string s;
     while (getline(cin, s)) {
-        cout << PhyloTree::decodePrefixNotation(nodes, s, new Kimura(10.0)).logLikelihood() << '\n';
+        cout << PhyloTree::decodePrefixNotation(nodes, s, new Kimura(4.0)).logLikelihood() << '\n';
         //cout << PhyloTree::decodePrefixNotation(nodes, s, new Kimura(10.0)).dot() << '\n';
     }
 
