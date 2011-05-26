@@ -3,6 +3,7 @@
 #include <iostream>
 #include <set>
 #include <sstream>
+#include <string>
 
 #include "Fasta.h"
 
@@ -28,7 +29,7 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, int maxLen)
     int n = -1;
     string line;
 
-    while (fastaFile >> line and !fastaFile.eof()) {
+    while ( getline(fastaFile, line) and !fastaFile.eof()) {
       if (line[0] == '>' or line[0] == ';') {
           if (!readingComment) {
               readingComment = true;
@@ -42,6 +43,10 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, int maxLen)
           assert(n>=0); // we should have read a comment before the data
           readingComment = false;
 
+          // remove space characters
+          for (string::iterator it = line.begin(); it != line.end(); ++it) {
+              if (*it == ' ') line.erase(it);
+          }
           data.back() += line;
       }
     }
