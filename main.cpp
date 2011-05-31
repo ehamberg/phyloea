@@ -2,6 +2,7 @@
 #include "EvolutionModel.h"
 #include "Fasta.h"
 #include "EASystem.h"
+#include "utils.h"
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -22,45 +23,45 @@ int main(int argc, const char *argv[])
 {
     if (argc < 8) {
         cerr << "Usage: " << argv[0] << " [pop size] [elitism] [gens] "
-            << "[mut. rate] [recomb. rate] [sequence file.fasta] "
+            << "[mut. rate] [recomb. rate] [no of sequences] "
             << "[log file path]" << endl;
         return 1;
     }
 
-    unsigned int popSize, elitism, gens;
+    unsigned int popSize, elitism, gens, nSequences;
     double mutRate, recRate;
-    string seqFile, logFilePath;
+    string  logFilePath;
 
     // read arguments and assign their values to the EA parameters
     {
-	    std::stringstream ss;
-	    ss << argv[1];
-	    ss >> popSize;
-	    ss.clear();
+        std::stringstream ss;
+        ss << argv[1];
+        ss >> popSize;
+        ss.clear();
 
-	    ss << argv[2];
-	    ss >> elitism;
-	    ss.clear();
+        ss << argv[2];
+        ss >> elitism;
+        ss.clear();
 
-	    ss << argv[3];
-	    ss >> gens;
-	    ss.clear();
+        ss << argv[3];
+        ss >> gens;
+        ss.clear();
 
-	    ss << argv[4];
-	    ss >> mutRate;
-	    ss.clear();
+        ss << argv[4];
+        ss >> mutRate;
+        ss.clear();
 
-	    ss << argv[5];
-	    ss >> recRate;
-	    ss.clear();
+        ss << argv[5];
+        ss >> recRate;
+        ss.clear();
 
-	    ss << argv[6];
-	    ss >> seqFile;
-	    ss.clear();
+        ss << argv[6];
+        ss >> nSequences;
+        ss.clear();
 
-	    ss << argv[7];
-	    ss >> logFilePath;
-	    ss.clear();
+        ss << argv[7];
+        ss >> logFilePath;
+        ss.clear();
     }
 
     unsigned int seed = time(NULL);
@@ -85,15 +86,17 @@ int main(int argc, const char *argv[])
 
     // create a random population of trees
     vector<string> randomTrees;
-    vector<PhyloTreeNode*> nodes;
     for (unsigned int i = 0; i < popSize; i++) {
-        nodes = Fasta::readFastaFile(seqFile, 0);
+        vector<PhyloTreeNode*> nodes;
+        for (unsigned int j = 0; j < nSequences; j++) {
+            nodes.push_back(new PhyloTreeNode(convertToString(j), ""));
+        }
         PhyloTree t;
         t.buildRandomTree(nodes);
         randomTrees.push_back(PhyloTreeNode::prefixRepresentation(t.getRoot()));
     }
 
-    EASystem<string> testEA(new MutateTree(nodes.size(), mutRate),
+    EASystem<string> testEA(new MutateTree(nSequences, mutRate),
             new RecombineTree(recRate), new RankSelection<string>,
             new PipeFitnessFunc<string>);
     testEA.setLogStream(&logFile);

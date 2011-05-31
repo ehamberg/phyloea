@@ -46,3 +46,11 @@ string convertToString(double x)
         throw BadConversion("stringify(double)");
     return o.str();
 }
+
+string convertToString(int x)
+{
+    std::ostringstream o;
+    if (!(o << x))
+        throw BadConversion("stringify(double)");
+    return o.str();
+}
