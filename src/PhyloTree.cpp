@@ -377,12 +377,10 @@ double PhyloTree::logLikelihood()
 
     vector<vector<double> > siteLikelihoods = m_rootNode->likelihood(m_evModel);
 
-    vector<vector<double> >::const_iterator it;
-    vector<double>::const_iterator jt;
-    for (it = siteLikelihoods.begin(); it != siteLikelihoods.end(); ++it) {
+    for (auto it = siteLikelihoods.cbegin(); it != siteLikelihoods.cend(); ++it) {
 
         double siteSum = 0.0;
-        for (jt = (*it).begin(); jt != (*it).end(); ++jt) {
+        for (auto jt = (*it).cbegin(); jt != (*it).cend(); ++jt) {
             siteSum += (*jt);
         }
 
@@ -429,8 +427,7 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
 
     // for each internal node (including the root) assign one or two internal
     // node as its child[ren]
-    vector<PhyloTreeNode*>::iterator it;
-    for (it = internal.begin(); it != internal.end()-1; ++it) {
+    for (auto it = internal.begin(); it != internal.end()-1; ++it) {
         if ((*(it+1))->isRoot()) {
             (*it)->addChild(*(it+1), randZeroToOne());
         }
@@ -442,8 +439,8 @@ void PhyloTree::buildRandomTree(vector<PhyloTreeNode*> leaves)
     }
 
     // last, add the leaf nodes
-    vector<PhyloTreeNode*>::iterator lt = leaves.begin();
-    for (it = internal.begin(); it != internal.end(); ++it) {
+    auto lt = leaves.begin();
+    for (auto it = internal.begin(); it != internal.end(); ++it) {
         while ((*it)->numChildren() < 2) {
             (*it)->addChild(*(lt++), randZeroToOne());
         }

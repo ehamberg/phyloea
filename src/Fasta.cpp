@@ -44,7 +44,7 @@ vector<PhyloTreeNode*> Fasta::readFastaFile(string filename, int maxLen)
           readingComment = false;
 
           // remove space characters
-          for (string::iterator it = line.begin(); it != line.end(); ++it) {
+          for (auto it = line.begin(); it != line.end(); ++it) {
               if (*it == ' ') line.erase(it);
           }
           data.back() += line;

@@ -6,8 +6,7 @@
 
 void MutateString::mutate(std::vector<std::string>& genomes)
 {
-    std::vector<std::string>::iterator it;
-    for (it = genomes.begin(); it != genomes.end(); ++it) {
+    for (auto it = genomes.begin(); it != genomes.end(); ++it) {
         for (unsigned int i = 0; i < it->length(); i++) {
             if (randZeroToOne() <= m_mutationRate) {
                 (*it)[i] = (char)(rand()%2+(int)'0');

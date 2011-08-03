@@ -166,14 +166,13 @@ TEST_F(PhyloTreeTest, PrefixCoding) {
     toRemove.push_back("c");
     toRemove.push_back("d");
 
-    vector<string>::const_iterator it;
-    for (it = tokens.begin(); it != tokens.end(); ++it) {
+    for (auto it = tokens.cbegin(); it != tokens.cend(); ++it) {
         std::cerr << "][" << *it << std::endl;
     }
 
     pruneTree(tokens, toRemove);
 
-    for (it = tokens.begin(); it != tokens.end(); ++it) {
+    for (auto it = tokens.cbegin(); it != tokens.cend(); ++it) {
         std::cerr << "[]" << *it << std::endl;
     }
 }*/

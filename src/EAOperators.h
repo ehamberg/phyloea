@@ -54,9 +54,8 @@ public:
         assert(pop.size() > 0);
 
         double fitnessSum = 0;
-        std::vector<double>::const_iterator it;
 
-        for (it = fitness.begin(); it != fitness.end(); it++) {
+        for (auto it = fitness.cbegin(); it != fitness.cend(); it++) {
             fitnessSum += *it;
         }
 
@@ -126,9 +125,8 @@ public:
     {
         std::vector<double> fitnessVals(genomes.size());
 
-        typename std::vector<T>::const_iterator it;
         int ii = 1;
-        for (it = genomes.begin(); it != genomes.end(); ++it) {
+        for (auto it = genomes.cbegin(); it != genomes.cend(); ++it) {
             std::cerr << ii++ << " requesting fitness for " << *it << '\n';
             std::cout << *it << '\n';
         }

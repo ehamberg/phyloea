@@ -19,8 +19,7 @@ string detokenize(const vector<string>& tokens, string sep)
 {
     string s;
 
-    vector<string>::const_iterator it;
-    for (it = tokens.begin(); it != tokens.end(); ++it) {
+    for (auto it = tokens.cbegin(); it != tokens.cend(); ++it) {
         s += *it;
         if (it != tokens.end()-1) {
             s += sep;

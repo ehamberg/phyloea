@@ -72,7 +72,6 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
 
         const double avgFitness = averageFitness();
 
-        typename vector<T>::const_iterator it;
         while (newGeneration.size()+m_elitism < m_population.size()) {
             T parent1 = m_selectionOp->select(m_population, m_fitnessValues);
             T parent2 = m_selectionOp->select(m_population, m_fitnessValues);
@@ -102,13 +101,13 @@ void EASystem<T>::runUntil(Generations<vector<T> > stoppingCriterion)
             vector<T> offspring;
             for (unsigned int i = 0; i < nOffspring; i++) {
                 vector<T> children = m_recOp->produceOffspring(parent1, parent2);
-                for (it = children.begin(); it != children.end(); ++it) {
+                for (auto it = children.cbegin(); it != children.cend(); ++it) {
                     offspring.push_back(*it);
                 }
             }
 
             // ... and add these to the new generation
-            for (it = offspring.begin(); it != offspring.end(); ++it) {
+            for (auto it = offspring.cbegin(); it != offspring.cend(); ++it) {
                 newGeneration.push_back(*it);
             }
         }
@@ -165,8 +164,7 @@ template <typename T>
 double EASystem<T>::averageFitness() const
 {
     double sum = 0;
-    vector<double>::const_iterator cdit;
-    for (cdit = m_fitnessValues.begin(); cdit != m_fitnessValues.end(); ++cdit) {
+    for (auto cdit = m_fitnessValues.cbegin(); cdit != m_fitnessValues.cend(); ++cdit) {
         sum += *cdit;
     }
 
@@ -177,8 +175,7 @@ template <typename T>
 double EASystem<T>::maxFitness() const
 {
     double highest = m_fitnessValues.at(0);
-    vector<double>::const_iterator cdit;
-    for (cdit = m_fitnessValues.begin()+1; cdit != m_fitnessValues.end(); ++cdit) {
+    for (auto cdit = m_fitnessValues.cbegin()+1; cdit != m_fitnessValues.cend(); ++cdit) {
         if (*cdit > highest) {
             highest = *cdit;
         }
@@ -191,8 +188,7 @@ template <typename T>
 double EASystem<T>::minFitness() const
 {
     double lowest = m_fitnessValues.at(0);
-    vector<double>::const_iterator cdit;
-    for (cdit = m_fitnessValues.begin()+1; cdit != m_fitnessValues.end(); ++cdit) {
+    for (auto cdit = m_fitnessValues.cbegin()+1; cdit != m_fitnessValues.cend(); ++cdit) {
         if (*cdit < lowest) {
             lowest = *cdit;
         }

@@ -37,8 +37,7 @@ vector<string> findSubTree2(const vector<string>& t, unsigned int n)
 
 void pruneTree2(vector<string>& tokens, const vector<string>& leaves)
 {
-    vector<string>::const_iterator it;
-    for (it = leaves.begin(); it != leaves.end(); ++it) {
+    for (auto it = leaves.cbegin(); it != leaves.cend(); ++it) {
         for (unsigned int i = 0; i < tokens.size(); i++) {
             if (tokens.at(i) == "h") {
                 continue;
@@ -71,8 +70,7 @@ void MutateTopology::mutate(vector<string>& genomes)
 {
     unsigned int rand1, rand2;
 
-    vector<string>::iterator it;
-    for (it = genomes.begin(); it != genomes.end(); ++it) {
+    for (auto it = genomes.begin(); it != genomes.end(); ++it) {
         vector<string> tokens = tokenize(*it);
         rand1 = rand()%tokens.size();
         rand2 = rand()%tokens.size();
@@ -123,8 +121,7 @@ vector<string> RecombineTopology::produceOffspring(const string& p1, const strin
 
         // find the leaves of the p1 sub tree
         vector<string> subLeaves;
-        vector<string>::const_iterator it;
-        for (it = subTree.begin(); it < subTree.end(); ++it) {
+        for (auto it = subTree.cbegin(); it < subTree.cend(); ++it) {
             if (*it != "h") {
                 subLeaves.push_back(*it);
             }

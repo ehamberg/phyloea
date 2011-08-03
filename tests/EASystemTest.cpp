@@ -14,8 +14,7 @@ public:
     ~MutateString() {}
     void mutate(std::vector<std::string>& genomes)
     {
-        std::vector<std::string>::iterator it;
-        for (it = genomes.begin(); it != genomes.end(); ++it) {
+        for (auto it = genomes.begin(); it != genomes.end(); ++it) {
             for (unsigned int i = 0; i < it->length(); i++) {
                 if ((double)rand()/(double)RAND_MAX <= m_mutationRate) {
                     (*it)[i] = (char)(rand()%2+(int)'0');
@@ -57,8 +56,7 @@ class CountOnes : public FitnessFunc<std::string> {
     std::vector<double> fitness(const std::vector<std::string>& genomes)
     {
         std::vector<double> fitness;
-        std::vector<std::string>::const_iterator it;
-        for (it = genomes.begin(); it != genomes.end(); ++it) {
+        for (auto it = genomes.cbegin(); it != genomes.cend(); ++it) {
             double f = 0;
             for (unsigned int i = 0; i < it->length(); i++) {
                 if (it->at(i) == '1') {

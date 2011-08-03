@@ -25,8 +25,7 @@ TEST_F(FastaTest, ReadFile) {
         ASSERT_EQ(15124, nodes[i]->noStates());
     }
 
-    vector<PhyloTreeNode*>::iterator it;
-    for (it = nodes.begin(); it != nodes.end(); it++) {
+    for (auto it = nodes.begin(); it != nodes.end(); it++) {
         delete *it;
     }
 }

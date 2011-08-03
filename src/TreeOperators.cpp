@@ -42,8 +42,7 @@ vector<string> findSubTree(const vector<string>& t, unsigned int n)
  */
 void pruneTree(vector<string>& tokens, const vector<string>& leaves)
 {
-    vector<string>::const_iterator it;
-    for (it = leaves.begin(); it != leaves.end(); ++it) {
+    for (auto it = leaves.cbegin(); it != leaves.cend(); ++it) {
         for (unsigned int i = 0; i < tokens.size(); i+=2) {
             if (tokens.at(i) == "h") {
                 continue;
@@ -80,8 +79,7 @@ void pruneTree(vector<string>& tokens, const vector<string>& leaves)
 
 void MutateTree::mutate(vector<string>& genomes)
 {
-    vector<string>::iterator it;
-    for (it = genomes.begin(); it != genomes.end(); ++it) {
+    for (auto it = genomes.begin(); it != genomes.end(); ++it) {
         if (randZeroToOne() > m_mutationRate) continue;
 
         // pick a random branch length
@@ -144,8 +142,7 @@ vector<string> RecombineTree::produceOffspring(const string& p1, const string& p
 
         // find the leaves of the p1 sub tree
         vector<string> subLeaves;
-        vector<string>::const_iterator it;
-        for (it = subTree.begin(); it < subTree.end(); it+=2) {
+        for (auto it = subTree.cbegin(); it < subTree.cend(); it+=2) {
             if (*it != "h") {
                 subLeaves.push_back(*it);
             }
